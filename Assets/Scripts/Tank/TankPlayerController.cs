@@ -14,6 +14,9 @@ public class TankPlayerController : MonoBehaviour
     private void Update()
     {
         MovementHandler();
+
+        if (Input.GetButtonDown("Fire1")) body.Fire(TankBody.BulletTypes.Default);
+
     }
 
     private void MovementHandler()

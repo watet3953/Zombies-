@@ -544,7 +544,7 @@ GameObject:
   - component: {fileID: 497380103}
   - component: {fileID: 497380102}
   - component: {fileID: 497380101}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: FogPlane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -681,7 +681,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1335
+    m_Bits: 3383
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -1059,6 +1059,10 @@ MonoBehaviour:
   rotationDirection: 0
   movementSpeed: 5
   rotationSpeed: 30
+  bullets:
+  - {fileID: 1245588272522384, guid: 33f2afafc42df85459fa61e1efb7d208, type: 3}
+  - {fileID: 1245588272522384, guid: 0ffffed8ae6623a4b93ad5c777981d4e, type: 3}
+  fireLocation: {fileID: 1848280170}
 --- !u!54 &1044774302
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1557,7 +1561,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1668249661}
   - component: {fileID: 1668249660}
-  - component: {fileID: 1668249659}
   m_Layer: 0
   m_Name: FogCamera
   m_TagString: Untagged
@@ -1565,14 +1568,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &1668249659
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1668249658}
-  m_Enabled: 1
 --- !u!20 &1668249660
 Camera:
   m_ObjectHideFlags: 0
