@@ -48,7 +48,6 @@ public class TankBody : MonoBehaviour
         aimDir.Normalize();
 
         turret.transform.rotation = Quaternion.LookRotation(aimDir);
-        //turret.transform.LookAt(aimDir);
     }
 
     public void Fire(BulletTypes bulletType)
