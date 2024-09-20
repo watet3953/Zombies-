@@ -6,6 +6,7 @@ TagManager:
   tags:
   - FireLocation
   - Wall
+  - Barricade
   layers:
   - Default
   - TransparentFX
@@ -13,7 +14,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Barricade
   - 
   - PostProcessing
   - ClearFog

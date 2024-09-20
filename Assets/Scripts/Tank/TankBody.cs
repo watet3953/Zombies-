@@ -8,10 +8,12 @@ public class TankBody : MonoBehaviour
     [SerializeField] private float movementSpeed = 5f;
     [SerializeField] private float rotationSpeed = 30f;
 
-    public enum BulletTypes { Default, }
+    public enum BulletTypes { Default, Expanding }
     [SerializeField] private GameObject[] bullets;
 
     private Rigidbody rb;
+
+    [SerializeField] public Transform turret;
 
     [SerializeField] private Transform fireLocation;
 
@@ -19,7 +21,6 @@ public class TankBody : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
     }
-
 
     private void FixedUpdate()
     {
@@ -42,10 +43,18 @@ public class TankBody : MonoBehaviour
         rb.MovePosition(transform.position + moveDirection);
     }
 
+    public void UpdateAimDir(Vector3 aimDir)
+    {
+        aimDir.Normalize();
+
+        turret.transform.rotation = Quaternion.LookRotation(aimDir);
+        //turret.transform.LookAt(aimDir);
+    }
+
     public void Fire(BulletTypes bulletType)
     {
         Vector3 direction = fireLocation.position - transform.position;
-        direction.y = 0f;
+        direction.y = (bulletType == BulletTypes.Expanding) ? (1.2f) : (0f);
         direction.Normalize();
 
         Bullet bullet = Instantiate(bullets[(int)(bulletType)], fireLocation.position, Quaternion.identity).GetComponent<Bullet>();

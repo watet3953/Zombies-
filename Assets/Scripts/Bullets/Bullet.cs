@@ -4,6 +4,7 @@ public class Bullet : MonoBehaviour
 {
     [SerializeField] protected float speed = 5f;
     [SerializeField] protected float lifetime = 5f;
+    [SerializeField] protected float damage = 5f;
 
     protected Vector3 direction = Vector3.zero;
 
@@ -22,9 +23,16 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.CompareTag("Barricade"))
+        {
+            other.GetComponent<Barricade>().DamageBarricade(damage);
+            Destroy(gameObject);
+        }
+
         if (other.CompareTag("Wall"))
         {
             Destroy(gameObject);
         }
+
     }
 }
