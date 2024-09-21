@@ -122,7 +122,7 @@ Rigidbody:
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1024
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -255,7 +255,7 @@ Rigidbody:
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1024
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -388,7 +388,7 @@ Rigidbody:
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1024
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -521,7 +521,7 @@ Rigidbody:
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1024
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -582,11 +582,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   barricadePieces:
-  - {fileID: 7315975222873496017}
-  - {fileID: 8136278125310644922}
+  - {fileID: 8240843964090851718}
+  - {fileID: 1095361457942367911}
   - {fileID: 2836017152064502253}
-  - {fileID: 6437655243370636798}
+  - {fileID: 103122010071300720}
   healthPerPiece: 5
+  piecesLeft: 0
 --- !u!65 &8603825010736344838
 BoxCollider:
   m_ObjectHideFlags: 0
