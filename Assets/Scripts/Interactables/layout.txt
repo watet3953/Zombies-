@@ -1,0 +1,11 @@
+Player Presses Interact Button
+\/
+Find Nearest Active Interactable in Range -> fail if none
+\/
+Initiate interaction with object -> fail if not eligible, display fail text?
+\/
+Object fails early (intended fail) -> send signal back to player and end interaction?
+\/
+Object fails early (unintended fail) -> send signal to interactable that interaction ends?
+\/
+Object completes -> send signal back to player and end interaction 
