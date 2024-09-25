@@ -2,8 +2,11 @@
 
 public class TankPlayerController : MonoBehaviour
 {
-    /// <summary> The physical body set to recieve input from the player </summary>
+    /// <summary> The physical tank attached to the input. </summary>
     private TankBody body;
+
+    /// <summary> Enables Debug output. </summary>
+    [SerializeField] private bool debug = false;
 
     private void Start()
     {
@@ -16,11 +19,19 @@ public class TankPlayerController : MonoBehaviour
         MovementHandler();
         UpdateAim();
 
-        if (Input.GetButtonDown("Fire1")) body.Fire(TankBody.BulletTypes.Default);
-        else if (Input.GetButtonDown("Fire2")) body.Fire(TankBody.BulletTypes.Expanding);
+        // Left click fires normal bullet, right click fires expanding.
+        if (Input.GetButtonDown("Fire1"))
+        { 
+            body.Fire(TankBody.BulletTypes.Default); 
+        }
+        else if (Input.GetButtonDown("Fire2"))
+        {
+            body.Fire(TankBody.BulletTypes.Expanding);
+        }
 
     }
 
+    /// <summary> Converts movement input into axis to the tankbody. </summary>
     private void MovementHandler()
     {
         Vector2 direction = new(
@@ -28,11 +39,9 @@ public class TankPlayerController : MonoBehaviour
                 Input.GetAxis("Vertical")
             );
 
-        body.forwardDirection = direction.y;
-        body.rotationDirection = direction.x;
+        body.forwardInput = direction.y;
+        body.rotationInput = direction.x;
     }
-
-    [SerializeField] private bool debug = false;
 
     private void UpdateAim()
     {
