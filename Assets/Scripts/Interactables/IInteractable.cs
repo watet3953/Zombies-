@@ -1,6 +1,7 @@
 using System.Collections;
+using UnityEngine;
 
-interface IInteractable 
+public interface IInteractable 
 {
     /// <summary> Signals that can be sent by the 
     /// Interactable Coroutine during an interaction. </summary>
@@ -18,6 +19,10 @@ interface IInteractable
         // Interaction was force-closed by the player side
         ClosedForced,   
     }
+
+    /// <summary> Gets the GameObject the interactable is on. </summary>
+    /// <returns> The attached GameObject.</returns>
+    public GameObject GetGameObject();
 
     /// <summary> Checks if the interactable is currently 
     /// available to be interacted with. </summary>

@@ -1,7 +1,17 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class TankPlayerController : MonoBehaviour
 {
+    //TODO: add camera panning in direction of aiming for scoped in stuff.
+    /// <summary> The camera attached to the tank. Not used yet </summary>
+    [SerializeField] private Camera activeCamera;
+
+    /// <summary>
+    /// The range to interact with.
+    /// </summary>
+    [SerializeField] private InteractableManager interactionArea;
+
     /// <summary> The physical tank attached to the input. </summary>
     private TankBody body;
 
@@ -13,45 +23,33 @@ public class TankPlayerController : MonoBehaviour
         body = GetComponentInChildren<TankBody>();
     }
 
-
-    private void Update()
+    public void OnLook(InputValue inputValue)
     {
-        MovementHandler();
-        UpdateAim();
-
-        // Left click fires normal bullet, right click fires expanding.
-        if (Input.GetButtonDown("Fire1"))
-        { 
-            body.Fire(TankBody.BulletTypes.Default); 
-        }
-        else if (Input.GetButtonDown("Fire2"))
-        {
-            body.Fire(TankBody.BulletTypes.Expanding);
-        }
-
+        UpdateAim(inputValue.Get<Vector2>());
     }
 
     /// <summary> Converts movement input into axis to the tankbody. </summary>
-    private void MovementHandler()
+    public void OnMove(InputValue inputValue)
     {
-        Vector2 direction = new(
-                Input.GetAxis("Horizontal"),
-                Input.GetAxis("Vertical")
-            );
+        Vector2 direction = inputValue.Get<Vector2>();
 
         body.forwardInput = direction.y;
         body.rotationInput = direction.x;
     }
 
-    private void UpdateAim()
+    public void OnFire(InputValue inputValue)
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        body.Fire(TankBody.BulletTypes.Default);
+    }
 
-        Plane plane = new Plane(body.turret.up, body.turret.position);
+    private void UpdateAim(Vector2 aimPos)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(aimPos);
 
-        float distanceToPlane;
+        Plane plane = new(body.turret.up, body.turret.position);
 
-        if (plane.Raycast(ray, out distanceToPlane))
+
+        if (plane.Raycast(ray, out float distanceToPlane))
         {
             Vector3 mouseWorldPos = ray.GetPoint(distanceToPlane);
 
@@ -60,13 +58,12 @@ public class TankPlayerController : MonoBehaviour
 
             body.UpdateAimDir(aimDirection);
 
-            if (debug)
-            {
-                Debug.DrawLine(body.transform.position, mouseWorldPos, Color.green);
-                Debug.DrawLine(ray.origin, mouseWorldPos, Color.magenta);
+            if (!debug) return;
 
-                Debug.DrawRay(mouseWorldPos, Vector3.left, Color.cyan);
-            }
+            Debug.DrawLine(body.transform.position, mouseWorldPos, Color.green);
+            Debug.DrawLine(ray.origin, mouseWorldPos, Color.magenta);
+
+            Debug.DrawRay(mouseWorldPos, Vector3.left, Color.cyan);
         }
     }
 }
