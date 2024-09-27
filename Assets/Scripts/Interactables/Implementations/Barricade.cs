@@ -34,7 +34,7 @@ public class Barricade : MonoBehaviour, IInteractable
 
     /// <summary> The distance to stop dragging the board towards the object and
     /// attach it </summary>
-    private readonly float reattachDistance = 0.2f;
+    private readonly float reattachDistance = 0.01f;
 
     private void Start()
     {
@@ -138,7 +138,11 @@ public class Barricade : MonoBehaviour, IInteractable
             barricadePieces[piece].MovePosition(Vector3.Lerp(
                     barricadePieces[piece].transform.position,
                     startPosition[piece],
-                    Time.fixedDeltaTime * 2));
+                    Time.fixedDeltaTime * 4));
+            barricadePieces[piece].MoveRotation(Quaternion.Lerp(
+                    barricadePieces[piece].transform.rotation,
+                    startRotation[piece],
+                    Time.fixedDeltaTime * 4));
             yield return new WaitForFixedUpdate();
         }
 

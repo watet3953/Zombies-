@@ -3,23 +3,6 @@ using UnityEngine;
 
 public interface IInteractable
 {
-    /// <summary> Signals that can be sent by the 
-    /// Interactable Coroutine during an interaction. </summary>
-    enum InteractionSignals
-    {
-
-        // continuing for another frame
-        Continue,
-
-        // Interaction completed and ended
-        ClosedOK,
-
-        // Interaction failed on the interactable side
-        ClosedFail,
-
-        // Interaction was force-closed by the player side
-        ClosedForced,
-    }
 
     /// <summary> Gets the GameObject the interactable is on. </summary>
     /// <returns> The attached GameObject.</returns>
