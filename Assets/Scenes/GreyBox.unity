@@ -154,7 +154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeCamera: {fileID: 0}
-  interactionArea: {fileID: 0}
+  interactionArea: {fileID: 409224783}
   debug: 1
 --- !u!4 &159967015
 Transform:
