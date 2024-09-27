@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,10 +11,12 @@ public class InteractableManager : MonoBehaviour
 
     [HideInInspector] public bool currentlyInteracting = false;
 
+    private Coroutine interaction;
+
     private void OnTriggerEnter(Collider other)
     {
         IInteractable interactable;
-        if (other.TryGetComponent<IInteractable>(out interactable)) 
+        if (other.TryGetComponent<IInteractable>(out interactable))
         {
             inRange.Add(interactable);
             RecalculateClosest();
@@ -37,13 +38,14 @@ public class InteractableManager : MonoBehaviour
     public void Interact()
     {
         if (Closest == null || !Closest.IsInteractable()) return;
-        Closest.StartInteraction();
+        interaction = Closest.GetSelf().StartCoroutine(
+                Closest.StartInteraction());
 
     }
 
     public void ForceEndInteraction()
     {
-        Closest.ForceEndInteraction();
+        if (interaction != null) Closest.ForceEndInteraction(interaction);
     }
 
 
@@ -53,8 +55,9 @@ public class InteractableManager : MonoBehaviour
         IInteractable closest = null;
         foreach (IInteractable i in inRange)
         {
-            float distance = (i.GetGameObject().transform.position
+            float distance = (i.GetSelf().transform.position
                     - gameObject.transform.position).magnitude;
+
             if (distance < minDist)
             {
                 distance = minDist;

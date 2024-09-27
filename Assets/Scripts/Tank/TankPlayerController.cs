@@ -10,7 +10,7 @@ public class TankPlayerController : MonoBehaviour
     /// <summary>
     /// The range to interact with.
     /// </summary>
-    [SerializeField] private InteractableManager interactionArea;
+    [SerializeField] private InteractableManager interactionManager;
 
     /// <summary> The physical tank attached to the input. </summary>
     private TankBody body;
@@ -40,6 +40,11 @@ public class TankPlayerController : MonoBehaviour
     public void OnFire(InputValue inputValue)
     {
         body.Fire(TankBody.BulletTypes.Default);
+    }
+
+    public void OnInteract(InputValue inputValue)
+    {
+        interactionManager.Interact();
     }
 
     private void UpdateAim(Vector2 aimPos)

@@ -1,7 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
-using UnityEngine.tvOS;
 
 public class Barricade : MonoBehaviour, IInteractable
 {
@@ -12,7 +10,8 @@ public class Barricade : MonoBehaviour, IInteractable
 
     /// <summary> The stored start locations of the barricade pieces, 
     /// used for repairing. </summary>
-    private Transform[] startLocations;
+    private Vector3[] startPosition;
+    private Quaternion[] startRotation;
 
     /// <summary> The damage each piece of the barricade can take before it 
     /// falls off. </summary>
@@ -35,19 +34,21 @@ public class Barricade : MonoBehaviour, IInteractable
 
     /// <summary> The distance to stop dragging the board towards the object and
     /// attach it </summary>
-    private readonly float reattachDistance = 1.0f;
+    private readonly float reattachDistance = 0.2f;
 
     private void Start()
     {
         piecesLeft = barricadePieces.Length;
 
-        startLocations = new Transform[piecesLeft];
+        startPosition = new Vector3[piecesLeft];
+        startRotation = new Quaternion[piecesLeft];
 
         // initial setup of all the pieces
         for (int i = 0; i < barricadePieces.Length; i++)
         {
             // copy to preserve original
-            startLocations[i] = barricadePieces[i].transform; 
+            startPosition[i] = barricadePieces[i].transform.position;
+            startRotation[i] = barricadePieces[i].transform.rotation;
             barricadePieces[i].isKinematic = true;
             barricadePieces[i].useGravity = false;
         }
@@ -112,41 +113,43 @@ public class Barricade : MonoBehaviour, IInteractable
             piecesLeft = 1;
         }
 
-        if (piecesLeft >= barricadePieces.Length) {
+        if (piecesLeft >= barricadePieces.Length)
+        {
             piecesLeft = barricadePieces.Length;
         }
 
-        ReattachPiece(piecesLeft - 1);
+        StartCoroutine(ReattachPiece(piecesLeft - 1));
     }
 
     /// <summary> Handles the physics of reattaching a piece by flinging it 
     /// towards it's original position and then clamping it when it gets 
     /// close enough. </summary>
     /// <param name="piece"> The index of the piece. </param>
-    private IEnumerable ReattachPiece(int piece)
+    private IEnumerator ReattachPiece(int piece)
     {
+        Debug.Log("Moving from " + barricadePieces[piece].transform.position + " To " + startPosition[piece]);
+        barricadePieces[piece].isKinematic = true;
+        barricadePieces[piece].useGravity = false;
+
         while ((barricadePieces[piece].transform.position
-                - startLocations[piece].position).magnitude
-                < reattachDistance)
+                - startPosition[piece]).magnitude
+                > reattachDistance)
         {
             barricadePieces[piece].MovePosition(Vector3.Lerp(
                     barricadePieces[piece].transform.position,
-                    startLocations[piece].position,
-                    Time.fixedDeltaTime * 4));
-            yield return null;
+                    startPosition[piece],
+                    Time.fixedDeltaTime * 2));
+            yield return new WaitForFixedUpdate();
         }
 
         barricadePieces[piece].transform.SetPositionAndRotation(
-                startLocations[piece].position,
-                startLocations[piece].rotation);
-
-        barricadePieces[piece].isKinematic = true;
-        barricadePieces[piece].useGravity = false;
+                startPosition[piece],
+                startRotation[piece]);
     }
 
     /* IInteractable */
 
-    public GameObject GetGameObject() => gameObject;
+    public MonoBehaviour GetSelf() => this;
 
     public string GetInteractionText()
     {
@@ -154,21 +157,18 @@ public class Barricade : MonoBehaviour, IInteractable
         return "Repair Barricade";
     }
 
-    public bool IsInteractable() 
-    { 
-        return piecesLeft < barricadePieces.Length; 
+    public bool IsInteractable() => piecesLeft < barricadePieces.Length;
+
+    public IEnumerator StartInteraction()
+    {
+        Debug.Log("Repairing");
+        while (piecesLeft < barricadePieces.Length)
+        {
+            yield return new WaitForSeconds(pieceRepairTime);
+            DamageBarricade(-healthPerPiece); // negative damage repairs
+            Debug.Log("Repair");
+        }
     }
 
-    public IEnumerable StartInteraction()
-    {
-        // wait the number of seconds set to repair
-        // heal by the amount needed to repair one board
-        // if all fixed, end safely
-        yield return IInteractable.InteractionSignals.Continue;
-    }
-
-    public void ForceEndInteraction()
-    {
-        
-    }
+    public void ForceEndInteraction(Coroutine interaction) => StopCoroutine(interaction);
 }

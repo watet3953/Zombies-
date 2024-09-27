@@ -153,8 +153,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fcb210f08f188b41ad72dbca10b852e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  activeCamera: {fileID: 0}
-  interactionArea: {fileID: 409224783}
+  activeCamera: {fileID: 534669904}
+  interactionManager: {fileID: 409224783}
   debug: 1
 --- !u!4 &159967015
 Transform:
