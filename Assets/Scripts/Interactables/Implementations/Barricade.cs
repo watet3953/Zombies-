@@ -34,6 +34,8 @@ public class Barricade : MonoBehaviour, IInteractable
 
     private bool beingRepaired = false;
 
+    private bool isSelected = false;
+
     /// <summary> The time to repair one piece of the barricade. </summary>
     public float pieceRepairTime = 1f;
 
@@ -96,6 +98,8 @@ public class Barricade : MonoBehaviour, IInteractable
         barricadePieces[piecesLeft].isKinematic = false;
         barricadePieces[piecesLeft].useGravity = true;
 
+        if (isSelected) Selected(isSelected); // redo the glowing bit now that it can be interacted with (supposedly)
+
     }
 
     /// <summary> Toggles the barricade's collision. </summary>
@@ -121,6 +125,7 @@ public class Barricade : MonoBehaviour, IInteractable
         if (piecesLeft >= barricadePieces.Length)
         {
             piecesLeft = barricadePieces.Length;
+            if (isSelected) Selected(isSelected);
         }
 
         StartCoroutine(ReattachPiece(piecesLeft - 1));
@@ -176,6 +181,9 @@ public class Barricade : MonoBehaviour, IInteractable
 
     public void Selected(bool isSelected)
     {
+        this.isSelected = isSelected;
+        isSelected &= IsInteractable();
+
         foreach (Rigidbody piece in barricadePieces)
         {
             piece.GetComponent<MeshRenderer>().material = isSelected ? selectedMaterial : unselectedMaterial;

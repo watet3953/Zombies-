@@ -7,11 +7,19 @@ public class InteractableManager : MonoBehaviour
 
     public IInteractable Closest { get; private set; } = null;
 
-    public void Awake() => inRange = new List<IInteractable>();
-
     private Coroutine interactionCoroutine;
     private IInteractable interactionObject;
 
+    public void Awake() => inRange = new List<IInteractable>();
+
+    private void Update()
+    {
+        if (transform.hasChanged)
+        {
+            transform.hasChanged = false;
+            RecalculateClosest(); // if moved, recalculate closest
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -60,6 +68,7 @@ public class InteractableManager : MonoBehaviour
 
     public void RecalculateClosest()
     {
+        //Debug.Log("Recalculating Closest Interaction");
         float minDist = Mathf.Infinity;
         IInteractable closest = null;
         foreach (IInteractable i in inRange)
@@ -67,7 +76,7 @@ public class InteractableManager : MonoBehaviour
             float distance = (i.GetSelf().transform.position
                     - gameObject.transform.position).magnitude;
 
-            if (distance < minDist)
+            if (distance < minDist && i.IsInteractable())
             {
                 distance = minDist;
                 closest = i;
