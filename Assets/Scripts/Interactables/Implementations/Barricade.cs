@@ -4,6 +4,9 @@ using UnityEngine;
 public class Barricade : MonoBehaviour, IInteractable
 {
 
+    [SerializeField] private Material unselectedMaterial;
+    [SerializeField] private Material selectedMaterial;
+
     /// <summary> The pieces of the barricade, falling off in order from 
     /// first added to last added </summary>
     [SerializeField] protected Rigidbody[] barricadePieces;
@@ -28,6 +31,8 @@ public class Barricade : MonoBehaviour, IInteractable
     /// <summary> Is the barricade broken? If true is able to be 
     /// passed through. </summary>
     public bool IsBroken { get; private set; } = false;
+
+    private bool beingRepaired = false;
 
     /// <summary> The time to repair one piece of the barricade. </summary>
     public float pieceRepairTime = 1f;
@@ -99,7 +104,7 @@ public class Barricade : MonoBehaviour, IInteractable
     private void SetBarricadeState(bool isBroken)
     {
         this.IsBroken = isBroken;
-        GetComponent<BoxCollider>().enabled = !isBroken;
+        GetComponent<BoxCollider>().isTrigger = isBroken;
     }
 
     /// <summary> Repairs a piece of the barricade, reenables barricade if the
@@ -127,7 +132,11 @@ public class Barricade : MonoBehaviour, IInteractable
     /// <param name="piece"> The index of the piece. </param>
     private IEnumerator ReattachPiece(int piece)
     {
-        Debug.Log("Moving from " + barricadePieces[piece].transform.position + " To " + startPosition[piece]);
+        Debug.Log("Moving from "
+                + barricadePieces[piece].transform.position
+                + " To "
+                + startPosition[piece]);
+
         barricadePieces[piece].isKinematic = true;
         barricadePieces[piece].useGravity = false;
 
@@ -139,11 +148,13 @@ public class Barricade : MonoBehaviour, IInteractable
                     barricadePieces[piece].transform.position,
                     startPosition[piece],
                     Time.fixedDeltaTime * 4));
+
             barricadePieces[piece].MoveRotation(Quaternion.Lerp(
                     barricadePieces[piece].transform.rotation,
                     startRotation[piece],
                     Time.fixedDeltaTime * 4));
-            yield return new WaitForFixedUpdate();
+
+            yield return null;
         }
 
         barricadePieces[piece].transform.SetPositionAndRotation(
@@ -163,16 +174,32 @@ public class Barricade : MonoBehaviour, IInteractable
 
     public bool IsInteractable() => piecesLeft < barricadePieces.Length;
 
+    public void Selected(bool isSelected)
+    {
+        foreach (Rigidbody piece in barricadePieces)
+        {
+            piece.GetComponent<MeshRenderer>().material = isSelected ? selectedMaterial : unselectedMaterial;
+        }
+    }
+
     public IEnumerator StartInteraction()
     {
         Debug.Log("Repairing");
+        beingRepaired = true;
         while (piecesLeft < barricadePieces.Length)
         {
             yield return new WaitForSeconds(pieceRepairTime);
             DamageBarricade(-healthPerPiece); // negative damage repairs
             Debug.Log("Repair");
         }
+        beingRepaired = false;
     }
 
-    public void ForceEndInteraction(Coroutine interaction) => StopCoroutine(interaction);
+    public bool IsBeingInteractedWith() => beingRepaired;
+
+    public void ForceEndInteraction(Coroutine interaction)
+    {
+        beingRepaired = false;
+        StopCoroutine(interaction);
+    }
 }

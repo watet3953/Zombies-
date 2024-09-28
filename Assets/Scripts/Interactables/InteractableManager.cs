@@ -9,9 +9,9 @@ public class InteractableManager : MonoBehaviour
 
     public void Awake() => inRange = new List<IInteractable>();
 
-    [HideInInspector] public bool currentlyInteracting = false;
+    private Coroutine interactionCoroutine;
+    private IInteractable interactionObject;
 
-    private Coroutine interaction;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -30,24 +30,33 @@ public class InteractableManager : MonoBehaviour
         if (other.TryGetComponent<IInteractable>(out interactable))
         {
             inRange.Remove(interactable);
-            if (currentlyInteracting) ForceEndInteraction();
+            if (CurrentlyInteracting()) ForceEndInteraction();
             RecalculateClosest();
         }
     }
 
     public void Interact()
     {
-        if (Closest == null || !Closest.IsInteractable()) return;
-        interaction = Closest.GetSelf().StartCoroutine(
+        if (Closest == null || !Closest.IsInteractable() || CurrentlyInteracting()) return;
+        interactionCoroutine = Closest.GetSelf().StartCoroutine(
                 Closest.StartInteraction());
+        interactionObject = Closest;
 
     }
 
     public void ForceEndInteraction()
     {
-        if (interaction != null) Closest.ForceEndInteraction(interaction);
+        Debug.Log("Kill Interaction");
+        if (CurrentlyInteracting()) Closest.ForceEndInteraction(interactionCoroutine);
+        interactionCoroutine = null;
+        interactionObject = null;
     }
 
+    public bool CurrentlyInteracting()
+    {
+        if (interactionCoroutine == null) return false;
+        return interactionObject.IsBeingInteractedWith();
+    }
 
     public void RecalculateClosest()
     {
@@ -64,6 +73,8 @@ public class InteractableManager : MonoBehaviour
                 closest = i;
             }
         }
+        Closest?.Selected(false); // swap which one is selected
         Closest = closest;
+        Closest?.Selected(true);
     }
 }

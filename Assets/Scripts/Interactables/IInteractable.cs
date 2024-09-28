@@ -14,6 +14,11 @@ public interface IInteractable
     /// false otherwise</returns>
     public bool IsInteractable();
 
+    /// <summary> Toggles if the object should behave like
+    /// it's being selected.  </summary>
+    /// <param name="isSelected"> If true, is selected. </param>
+    public void Selected(bool isSelected);
+
     /// <summary> Starts an interaction with this object,
     /// returning a coroutine that outputs signals related to 
     /// the interaction's state. </summary>
@@ -24,6 +29,8 @@ public interface IInteractable
     /// coroutine will output InteractionSignals.ClosedForced
     /// when this occurs. </summary>
     public void ForceEndInteraction(Coroutine interactor);
+
+    public bool IsBeingInteractedWith();
 
     /// <summary> Outputs the text to display if able to 
     /// interact. if null then no display is needed. </summary>

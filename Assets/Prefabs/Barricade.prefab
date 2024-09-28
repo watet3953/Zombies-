@@ -581,6 +581,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 743ee1e5ad87ff64aa2ee2736785320c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unselectedMaterial: {fileID: 2100000, guid: 9205d7053f8a05549ae46cf147dc323d, type: 2}
+  selectedMaterial: {fileID: 2100000, guid: 9dc8e1291b60dca47b2ea4342060b870, type: 2}
   barricadePieces:
   - {fileID: 8240843964090851718}
   - {fileID: 1095361457942367911}
