@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class TankBody : MonoBehaviour
 {
@@ -6,8 +7,8 @@ public class TankBody : MonoBehaviour
     [HideInInspector] public Vector2 inputAxis;
 
     /// <summary> The top speed the player should move in a given direction, 
-    /// formatted as (FORWARD, BACKWARD, LEFT, RIGHT). </summary>
-    [SerializeField] private Vector4 movementSpeed = new(5f, 2f, 2f, 2f);
+    /// formatted as (FORWARD, BACKWARD). </summary>
+    [SerializeField] private Vector2 movementSpeed = new(5f, 2f);
 
 
     /// <summary> The types of bullet the tank can fire. </summary>
@@ -33,34 +34,24 @@ public class TankBody : MonoBehaviour
     /// <summary> The transform at which the bullet is spawned. </summary>
     [SerializeField] private Transform fireLocation;
 
-    private void Awake()
-    {
-        rb = GetComponent<Rigidbody>();
-    }
+    private void Awake() => rb = GetComponent<Rigidbody>();
 
-    private void FixedUpdate()
-    {
-        Movement();
-    }
+    private void FixedUpdate() => Movement();
 
-    /// <summary> Handles the movement of the tank body. </summary>
+    /// <summary> Handles the movement of the player body. </summary>
     private void Movement()
     {
-        // Z axis times desired direction and max speed, 
-        // normalized to fixed delta time.
-        Vector3 moveDirection = new(
-                inputAxis.x > 0 
-                        ? inputAxis.x * movementSpeed.z 
-                        : inputAxis.x * movementSpeed.w,
-                0,
-                inputAxis.y > 0 
-                        ? inputAxis.y * movementSpeed.x 
-                        : inputAxis.y * movementSpeed.y
-            );
-        
+
+        Vector3 moveDirection = new(inputAxis.x, 0, inputAxis.y);
+        moveDirection.Normalize();
+
+        // set movement speed based on difference between forward and movement.
+        moveDirection *= Mathf.Lerp(
+                movementSpeed.x,
+                movementSpeed.y,
+                Vector3.Angle(moveDirection, transform.forward) / 180f);
 
         moveDirection *= Time.fixedDeltaTime;
-        moveDirection = transform.rotation * moveDirection; // rotate to player
 
         rb.MovePosition(transform.position + moveDirection);
     }
