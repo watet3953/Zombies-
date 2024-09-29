@@ -7,9 +7,7 @@ public class TankPlayerController : MonoBehaviour
     /// <summary> The camera attached to the tank. Not used yet </summary>
     [SerializeField] private Camera activeCamera;
 
-    /// <summary>
-    /// The range to interact with.
-    /// </summary>
+    /// <summary> The interaction manager. </summary>
     [SerializeField] private InteractableManager interactionManager;
 
     /// <summary> The physical tank attached to the input. </summary>
@@ -18,24 +16,24 @@ public class TankPlayerController : MonoBehaviour
     /// <summary> Enables Debug output. </summary>
     [SerializeField] private bool debug = false;
 
-    private void Start()
-    {
-        body = GetComponentInChildren<TankBody>();
-    }
+    // GetComponentInChildren<TankBody>();
+    private void Start() => body = transform.Find("TankBody").GetComponent<TankBody>(); 
 
+    /// <summary> Rotates the player towards the provided aim. </summary>
+    /// <param name="inputValue"> The Input as a Vector2. </param>
     public void OnLook(InputValue inputValue)
     {
         UpdateAim(inputValue.Get<Vector2>());
     }
 
-    /// <summary> Converts movement input into axis to the tankbody. </summary>
+    /// <summary> Moves the player in the specified direction. </summary>
     public void OnMove(InputValue inputValue)
     {
-        Vector2 direction = inputValue.Get<Vector2>();
-
-        body.inputAxis = direction;
+        body.inputAxis = inputValue.Get<Vector2>();
     }
 
+    /// <summary> The primary fire input, shoots. </summary>
+    /// <param name="inputValue"> The shot input, discarded. </param>
     public void OnFire(InputValue inputValue)
     {
         body.Fire(TankBody.BulletTypes.Default);

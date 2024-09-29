@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityEditor.PackageManager;
+using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
@@ -8,31 +9,27 @@ public class Bullet : MonoBehaviour
 
     protected Vector3 direction = Vector3.zero;
 
-    protected void Start() { Destroy(gameObject, lifetime); }
+    protected void Start() => Destroy(gameObject, lifetime);
 
-    protected void Update() { transform.Translate(direction * speed * Time.deltaTime); }
+    protected void Update() => transform.Translate(speed * Time.deltaTime * direction);
 
     /// <summary>
     /// Sets the direction of the bullet to travel
     /// </summary>
     /// <param name="dir"> The direction for the bullet to travel in, global coordinates.</param>
-    public void Fire(Vector3 dir)
-    {
-        direction = dir;
-    }
+    public void Fire(Vector3 dir) => direction = dir;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Barricade"))
-        {
-            other.GetComponent<Barricade>().DamageBarricade(damage);
-            Destroy(gameObject);
+        switch (other.tag) {
+            case "Barricade":
+                other.GetComponent<Barricade>().DamageBarricade(damage);
+                goto case "Wall";
+            case "Wall":
+                Destroy(gameObject);
+                break;
+            default:
+                break;
         }
-
-        if (other.CompareTag("Wall"))
-        {
-            Destroy(gameObject);
-        }
-
     }
 }
