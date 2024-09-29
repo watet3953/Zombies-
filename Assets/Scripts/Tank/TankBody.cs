@@ -2,17 +2,12 @@
 
 public class TankBody : MonoBehaviour
 {
-    /// <summary> Input from user for moving forward/backward. </summary>
-    [HideInInspector] public float forwardInput;
+    /// <summary> User input for moving forward/backward/left/right. </summary>
+    [HideInInspector] public Vector2 inputAxis;
 
-    /// <summary> Input from user for turning left/right. </summary>
-    [HideInInspector] public float rotationInput;
-
-    /// <summary> The top speed the player should normally move. </summary>
-    [SerializeField] private float movementSpeed = 5f;
-
-    /// <summary> The top speed the player should normally rotate. </summary>
-    [SerializeField] private float rotationSpeed = 30f;
+    /// <summary> The top speed the player should move in a given direction, 
+    /// formatted as (FORWARD, BACKWARD, LEFT, RIGHT). </summary>
+    [SerializeField] private Vector4 movementSpeed = new(5f, 2f, 2f, 2f);
 
 
     /// <summary> The types of bullet the tank can fire. </summary>
@@ -29,11 +24,11 @@ public class TankBody : MonoBehaviour
     /// to BulletTypes enum value. </summary>
     [SerializeField] private GameObject[] bullets;
 
-    /// <summary> The tank rigidbody, used for movement. </summary>
+    /// <summary> The tank rigidbody, used for movement and aiming </summary>
     private Rigidbody rb;
 
-    /// <summary> The turret of the tank, used for aiming. </summary>
-    [SerializeField] public Transform turret;
+    /// <summary> The transform of the barrel, used aiming. </summary>
+    [SerializeField] private Transform barrelLocation;
 
     /// <summary> The transform at which the bullet is spawned. </summary>
     [SerializeField] private Transform fireLocation;
@@ -46,19 +41,6 @@ public class TankBody : MonoBehaviour
     private void FixedUpdate()
     {
         Movement();
-        Rotation();
-    }
-
-    /// <summary> Handles the rotation of the tank body. </summary>
-    private void Rotation()
-    {
-        // Get desired body rotation via user input around the y axis
-        Quaternion deltaRotation = Quaternion.Euler(
-                rotationInput 
-                * Time.fixedDeltaTime 
-                * new Vector3(0, rotationSpeed, 0));
-
-        rb.MoveRotation(rb.rotation * deltaRotation);
     }
 
     /// <summary> Handles the movement of the tank body. </summary>
@@ -66,10 +48,19 @@ public class TankBody : MonoBehaviour
     {
         // Z axis times desired direction and max speed, 
         // normalized to fixed delta time.
-        Vector3 moveDirection = forwardInput 
-                * movementSpeed 
-                * Time.fixedDeltaTime 
-                * transform.forward;
+        Vector3 moveDirection = new(
+                inputAxis.x > 0 
+                        ? inputAxis.x * movementSpeed.z 
+                        : inputAxis.x * movementSpeed.w,
+                0,
+                inputAxis.y > 0 
+                        ? inputAxis.y * movementSpeed.x 
+                        : inputAxis.y * movementSpeed.y
+            );
+        
+
+        moveDirection *= Time.fixedDeltaTime;
+        moveDirection = transform.rotation * moveDirection; // rotate to player
 
         rb.MovePosition(transform.position + moveDirection);
     }
@@ -80,14 +71,14 @@ public class TankBody : MonoBehaviour
     {
         aimDir.Normalize();
 
-        turret.transform.rotation = Quaternion.LookRotation(aimDir);
+        rb.transform.rotation = Quaternion.LookRotation(aimDir);
     }
 
     /// <summary> Fires the specified bullet type from fireLocation. </summary>
     /// <param name="bulletType"> The type of bullet to fire.</param>
     public void Fire(BulletTypes bulletType)
     {
-        Vector3 direction = fireLocation.position - transform.position;
+        Vector3 direction = fireLocation.position - barrelLocation.position;
         direction.y = (bulletType == BulletTypes.Expanding) ? 1.2f : 0f;
         direction.Normalize();
 

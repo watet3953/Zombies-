@@ -33,8 +33,7 @@ public class TankPlayerController : MonoBehaviour
     {
         Vector2 direction = inputValue.Get<Vector2>();
 
-        body.forwardInput = direction.y;
-        body.rotationInput = direction.x;
+        body.inputAxis = direction;
     }
 
     public void OnFire(InputValue inputValue)
@@ -51,14 +50,14 @@ public class TankPlayerController : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(aimPos);
 
-        Plane plane = new(body.turret.up, body.turret.position);
+        Plane plane = new(body.transform.up, body.transform.position);
 
 
         if (plane.Raycast(ray, out float distanceToPlane))
         {
             Vector3 mouseWorldPos = ray.GetPoint(distanceToPlane);
 
-            Vector3 aimDirection = mouseWorldPos - body.turret.position;
+            Vector3 aimDirection = mouseWorldPos - body.transform.position;
             aimDirection.y = 0f;
 
             body.UpdateAimDir(aimDirection);
