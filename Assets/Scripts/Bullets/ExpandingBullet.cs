@@ -49,7 +49,7 @@ public class ExpandingBullet : Bullet
             currentScale = Mathf.MoveTowards(
                     currentScale,
                     expandSize,
-                    Time.deltaTime);
+                    Time.deltaTime * 4);
             transform.localScale = currentScale * Vector3.one;
             yield return null;
         }
@@ -57,7 +57,7 @@ public class ExpandingBullet : Bullet
         StartCoroutine(Fade());
     }
 
-    private IEnumerator Fade(float fadeAmount = .05f, float fadeWait = 1f)
+    private IEnumerator Fade(float fadeAmount = .1f, float fadeWait = .1f)
     {
         Renderer renderer = gameObject.GetComponent<Renderer>();
         float alpha = renderer.material.color.a;

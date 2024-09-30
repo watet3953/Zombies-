@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TankBody : MonoBehaviour
+public class PlayerBody : MonoBehaviour
 {
     /// <summary> User input for moving forward/backward/left/right. </summary>
     [HideInInspector] public Vector2 inputAxis;

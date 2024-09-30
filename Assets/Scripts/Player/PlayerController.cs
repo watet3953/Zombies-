@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class TankPlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     //TODO: add camera panning in direction of aiming for scoped in stuff.
     /// <summary> The camera attached to the tank. Not used yet </summary>
@@ -11,13 +11,13 @@ public class TankPlayerController : MonoBehaviour
     [SerializeField] private InteractableManager interactionManager;
 
     /// <summary> The physical tank attached to the input. </summary>
-    private TankBody body;
+    private PlayerBody body;
 
     /// <summary> Enables Debug output. </summary>
     [SerializeField] private bool debug = false;
 
-    // GetComponentInChildren<TankBody>();
-    private void Start() => body = transform.Find("TankBody").GetComponent<TankBody>(); 
+    // GetComponentInChildren<PlayerBody>();
+    private void Start() => body = transform.Find("PlayerBody").GetComponent<PlayerBody>(); 
 
     /// <summary> Rotates the player towards the provided aim. </summary>
     /// <param name="inputValue"> The Input as a Vector2. </param>
@@ -36,7 +36,14 @@ public class TankPlayerController : MonoBehaviour
     /// <param name="inputValue"> The shot input, discarded. </param>
     public void OnFire(InputValue inputValue)
     {
-        body.Fire(TankBody.BulletTypes.Default);
+        body.Fire(PlayerBody.BulletTypes.Default);
+    }
+
+    /// <summary> The alternate fire input, fires a expanding bullet. </summary>
+    /// <param name="inputValue"> The shot input, discarded. </param>
+    public void OnAltFire(InputValue inputValue)
+    {
+        body.Fire(PlayerBody.BulletTypes.Expanding);
     }
 
     public void OnInteract(InputValue inputValue)

@@ -84,20 +84,18 @@ public class Barricade : MonoBehaviour, IInteractable
     private void KnockOffPiece()
     {
         piecesLeft--;
+        if (piecesLeft >= 0) {
+            barricadePieces[piecesLeft].isKinematic = false;
+            barricadePieces[piecesLeft].useGravity = true;
+            barricadePieces[piecesLeft].AddForce(Random.onUnitSphere * 100f);
+        }
+
         if (piecesLeft <= 0)
         {
             piecesLeft = 0;
-
-            barricadePieces[0].isKinematic = false;
-            barricadePieces[0].useGravity = true;
-
             SetBarricadeState(true);
-
-            return;
         }
-        barricadePieces[piecesLeft].isKinematic = false;
-        barricadePieces[piecesLeft].useGravity = true;
-
+        
         if (isSelected) Selected(isSelected); // redo the glowing bit now that it can be interacted with (supposedly)
 
     }

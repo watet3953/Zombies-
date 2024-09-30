@@ -23,6 +23,7 @@ public class Bullet : MonoBehaviour
     {
         switch (other.tag) {
             case "Barricade":
+                if (other.GetComponent<Barricade>().IsBroken) return;
                 other.GetComponent<Barricade>().DamageBarricade(damage);
                 goto case "Wall";
             case "Wall":
