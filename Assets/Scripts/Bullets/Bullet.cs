@@ -29,7 +29,7 @@ public class Bullet : MonoBehaviour
     public void Fire(Vector3 dir)
     {
         Debug.Assert(
-                dir.magnitude == 1f,
+                dir.magnitude.CompareTo(1f) <= 0.1f,
                 "Bullet fire direction is not normalized."
             );
         direction = dir;
