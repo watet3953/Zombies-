@@ -35,7 +35,7 @@ public class Bullet : MonoBehaviour
         direction = dir;
     }
 
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         switch (other.tag) {
             case "Barricade": // Damage barricade if intact, then act like wall
