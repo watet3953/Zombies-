@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class PlayerBody : MonoBehaviour
 {
@@ -8,7 +7,7 @@ public class PlayerBody : MonoBehaviour
 
     /// <summary> The top speed the player should move in a given direction, 
     /// formatted as (FORWARD, BACKWARD). </summary>
-    [SerializeField] private Vector2 movementSpeed = new(5f, 2f);
+    [SerializeField] protected Vector2 movementSpeed = new(5f, 2f);
 
 
     /// <summary> The types of bullet the tank can fire. </summary>
@@ -23,23 +22,33 @@ public class PlayerBody : MonoBehaviour
 
     /// <summary> An array of bullet prefabs, with array index corresponding 
     /// to BulletTypes enum value. </summary>
-    [SerializeField] private GameObject[] bullets;
+    [SerializeField] protected GameObject[] bullets;
 
     /// <summary> The tank rigidbody, used for movement and aiming </summary>
-    private Rigidbody rb;
+    protected Rigidbody rb;
 
     /// <summary> The transform of the barrel, used aiming. </summary>
-    [SerializeField] private Transform barrelLocation;
+    [SerializeField] protected Transform barrelLocation;
 
     /// <summary> The transform at which the bullet is spawned. </summary>
-    [SerializeField] private Transform fireLocation;
+    [SerializeField] protected Transform fireLocation;
 
-    private void Awake() => rb = GetComponent<Rigidbody>();
+    protected void Awake()
+    {
+        Debug.Assert(
+                GetComponent<Rigidbody>() != null,
+                "Could not find rigidbody for Player."
+            );
+        rb = GetComponent<Rigidbody>();
+    }
 
-    private void FixedUpdate() => Movement();
+    protected void FixedUpdate()
+    {
+        Movement();
+    }
 
     /// <summary> Handles the movement of the player body. </summary>
-    private void Movement()
+    protected void Movement()
     {
 
         Vector3 moveDirection = new(inputAxis.x, 0, inputAxis.y);
@@ -49,7 +58,8 @@ public class PlayerBody : MonoBehaviour
         moveDirection *= Mathf.Lerp(
                 movementSpeed.x,
                 movementSpeed.y,
-                Vector3.Angle(moveDirection, transform.forward) / 180f);
+                Vector3.Angle(moveDirection, transform.forward) / 180f
+            );
 
         moveDirection *= Time.fixedDeltaTime;
 

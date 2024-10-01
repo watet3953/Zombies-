@@ -3,14 +3,21 @@ using UnityEngine;
 
 public class ExpandingBullet : Bullet
 {
-    [SerializeField] private float expandSize = 5f;
-    private Rigidbody rb;
+    /// <summary> How large the bullet expands to in units diameter. </summary>
+    [SerializeField] protected float expandSize = 5f;
 
-    private void Awake() => rb = GetComponent<Rigidbody>();
+    /// <summary> The Rigidbody for the bullet. </summary>
+    protected Rigidbody rb;
 
-    private new void Start() { } // To wipe functionality of superclass.
+    protected void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        Debug.Assert(rb != null, "Could not get Rigidbody.");
+    }
 
-    private new void Update() { } // To wipe functionality of superclass.
+    protected new void Start() { } // To wipe functionality of superclass.
+
+    protected new void Update() { } // To wipe functionality of superclass.
 
     private void FixedUpdate()
     {
@@ -21,11 +28,19 @@ public class ExpandingBullet : Bullet
     private void OnTriggerEnter(Collider other)
     {
         switch (other.tag) {
-            case "Barricade":
+            case "Barricade": // Damage barricade if intact, then act like wall
+            {
+                if (other.GetComponent<Barricade>().IsBroken)
+                {
+                    return;
+                }
+
                 other.GetComponent<Barricade>().DamageBarricade(damage);
 
                 goto case "Wall";
-            case "Wall":
+            }
+            case "Wall": // Fall to ground and begin expanding.
+            {
                 direction = Vector3.zero;
                 rb.useGravity = true;
                 rb.isKinematic = true;
@@ -33,11 +48,17 @@ public class ExpandingBullet : Bullet
                 StartCoroutine(Expand());
 
                 break;
-            default:
+            }
+            default: // Assume bullet isn't meant to collide
+            {
                 break;
+            }
         }
     }
 
+    /// <summary> Expand the bullet to the maximum size,
+    /// then call Fade(). </summary>
+    /// <returns> Unused. </returns>
     private IEnumerator Expand()
     {
         Vector3 originalScale = transform.localScale;
@@ -49,20 +70,31 @@ public class ExpandingBullet : Bullet
             currentScale = Mathf.MoveTowards(
                     currentScale,
                     expandSize,
-                    Time.deltaTime * 4);
-            transform.localScale = currentScale * Vector3.one;
+                    Time.deltaTime * 4
+                );
+                
+            transform.localScale = currentScale * originalScale;
+
             yield return null;
         }
 
         StartCoroutine(Fade());
     }
 
+    /// <summary> Fade out the bullet over a series of cycles until it is
+    /// invisible, then destroy it. </summary>
+    /// <param name="fadeAmount"> The percentage to fade by per cycle.</param>
+    /// <param name="fadeWait"> The time per cycle. </param>
+    /// <returns> Unused. </returns>
     private IEnumerator Fade(float fadeAmount = .1f, float fadeWait = .1f)
     {
         Renderer renderer = gameObject.GetComponent<Renderer>();
-        float alpha = renderer.material.color.a;
 
-        for (; alpha >= 0; alpha -= fadeAmount)
+        for (
+                float alpha = renderer.material.color.a;
+                alpha >= 0;
+                alpha -= fadeAmount
+            )
         {
             Color c = renderer.material.color;
             c.a = alpha;

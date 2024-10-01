@@ -3,9 +3,11 @@ using UnityEngine;
 
 public class Barricade : MonoBehaviour, IInteractable
 {
+    /// <summary> The barricade material when not currently in range. </summary>
+    [SerializeField] protected Material unselectedMaterial;
 
-    [SerializeField] private Material unselectedMaterial;
-    [SerializeField] private Material selectedMaterial;
+    /// <summary> The barricade material when currently in range. </summary>
+    [SerializeField] protected Material selectedMaterial;
 
     /// <summary> The pieces of the barricade, falling off in order from 
     /// first added to last added </summary>
@@ -13,37 +15,43 @@ public class Barricade : MonoBehaviour, IInteractable
 
     /// <summary> The stored start locations of the barricade pieces, 
     /// used for repairing. </summary>
-    private Vector3[] startPosition;
-    private Quaternion[] startRotation;
+    protected Vector3[] startPosition;
+
+    /// <summary> The stored start rotations of the barricade pieces,
+    /// used for repairing. </summary>
+    protected Quaternion[] startRotation;
 
     /// <summary> The damage each piece of the barricade can take before it 
     /// falls off. </summary>
-    [SerializeField] private float healthPerPiece = 5f;
+    [SerializeField] protected float healthPerPiece = 5f;
 
     /// <summary> The stored damage, when over healthPerPiece will destroy one 
     /// piece of the barricade </summary>
-    private float deltaDamage = 0.0f;
+    protected float deltaDamage = 0.0f;
 
     /// <summary> The current position in the array to repair, destroying
     /// removes the entry one below this (0 indicates all broken) </summary>
-    private volatile int piecesLeft;
+    protected volatile int piecesLeft;
 
     /// <summary> Is the barricade broken? If true is able to be 
     /// passed through. </summary>
-    public bool IsBroken { get; private set; } = false;
+    public bool IsBroken 
+    { get; private set; } = false;
 
-    private bool beingRepaired = false;
+    /// <summary> Is the barrier being repaired by the player? </summary>
+    protected bool beingRepaired = false;
 
-    private bool isSelected = false;
+    /// <summary> Is the barricade eligible to be selected? </summary>
+    protected bool isSelected = false;
 
     /// <summary> The time to repair one piece of the barricade. </summary>
     public float pieceRepairTime = 1f;
 
     /// <summary> The distance to stop dragging the board towards the object and
     /// attach it </summary>
-    private readonly float reattachDistance = 0.01f;
+    protected readonly float reattachDistance = 0.01f;
 
-    private void Start()
+    protected void Start()
     {
         piecesLeft = barricadePieces.Length;
 
@@ -81,10 +89,11 @@ public class Barricade : MonoBehaviour, IInteractable
 
     /// <summary> Break a piece of the barricade off, if last is broken then 
     /// disable barricade </summary>
-    private void KnockOffPiece()
+    protected void KnockOffPiece()
     {
         piecesLeft--;
-        if (piecesLeft >= 0) {
+        if (piecesLeft >= 0) 
+        {
             barricadePieces[piecesLeft].isKinematic = false;
             barricadePieces[piecesLeft].useGravity = true;
             barricadePieces[piecesLeft].AddForce(Random.onUnitSphere * 100f);
@@ -96,7 +105,10 @@ public class Barricade : MonoBehaviour, IInteractable
             SetBarricadeState(true);
         }
         
-        if (isSelected) Selected(isSelected); // redo the glowing bit now that it can be interacted with (supposedly)
+        // Recalculate if selected now that a piece has been removed.
+        if (isSelected) {
+            Selected(isSelected); 
+        }
 
     }
 
@@ -105,13 +117,19 @@ public class Barricade : MonoBehaviour, IInteractable
     /// if true collision is disabled. </param>
     private void SetBarricadeState(bool isBroken)
     {
-        this.IsBroken = isBroken;
-        GetComponent<BoxCollider>().isTrigger = isBroken;
+        IsBroken = isBroken;
+
+        Debug.Assert(
+                GetComponent<Collider>() != null,
+                "Could not find collider for Barricade."
+            );
+
+        GetComponent<Collider>().isTrigger = isBroken;
     }
 
     /// <summary> Repairs a piece of the barricade, reenables barricade if the
     /// first piece is repaired. </summary>
-    private void RepairPiece()
+    protected void RepairPiece()
     {
         piecesLeft++;
         if (piecesLeft <= 1)
@@ -123,7 +141,10 @@ public class Barricade : MonoBehaviour, IInteractable
         if (piecesLeft >= barricadePieces.Length)
         {
             piecesLeft = barricadePieces.Length;
-            if (isSelected) Selected(isSelected);
+            if (isSelected) 
+            {
+                Selected(isSelected);
+            }
         }
 
         StartCoroutine(ReattachPiece(piecesLeft - 1));
@@ -133,75 +154,111 @@ public class Barricade : MonoBehaviour, IInteractable
     /// towards it's original position and then clamping it when it gets 
     /// close enough. </summary>
     /// <param name="piece"> The index of the piece. </param>
-    private IEnumerator ReattachPiece(int piece)
+    /// <returns> Unused. <\returns>
+    protected IEnumerator ReattachPiece(int piece)
     {
         Debug.Log("Moving from "
                 + barricadePieces[piece].transform.position
                 + " To "
-                + startPosition[piece]);
+                + startPosition[piece]
+            );
 
         barricadePieces[piece].isKinematic = true;
         barricadePieces[piece].useGravity = false;
 
-        while ((barricadePieces[piece].transform.position
-                - startPosition[piece]).magnitude
-                > reattachDistance)
+        // FIXME: will fail if barricade piece is unable to get within distance
+        // While further away than the re-attach distance
+        while (
+            (
+                barricadePieces[piece].transform.position
+                - startPosition[piece]
+            ).magnitude > reattachDistance
+        )
         {
+            // Lerp the position and rotation towards the end goal.
             barricadePieces[piece].MovePosition(Vector3.Lerp(
                     barricadePieces[piece].transform.position,
                     startPosition[piece],
-                    Time.fixedDeltaTime * 4));
+                    Time.fixedDeltaTime * 4
+                ));
 
             barricadePieces[piece].MoveRotation(Quaternion.Lerp(
                     barricadePieces[piece].transform.rotation,
                     startRotation[piece],
-                    Time.fixedDeltaTime * 4));
+                    Time.fixedDeltaTime * 4
+                ));
 
             yield return null;
         }
 
         barricadePieces[piece].transform.SetPositionAndRotation(
                 startPosition[piece],
-                startRotation[piece]);
+                startRotation[piece]
+            );
     }
 
-    /* IInteractable */
 
-    public MonoBehaviour GetSelf() => this;
+    /* IInteractable Implementation */
+
+
+    public MonoBehaviour GetSelf()
+    {
+        return this;
+    }
 
     public string GetInteractionText()
     {
-        if (piecesLeft >= barricadePieces.Length) return null;
+        if (!IsInteractable()) {
+           return null; 
+        } 
         return "Repair Barricade";
     }
 
-    public bool IsInteractable() => piecesLeft < barricadePieces.Length;
+    public bool IsInteractable()
+    {
+        return piecesLeft < barricadePieces.Length;
+    }
 
     public void Selected(bool isSelected)
     {
         this.isSelected = isSelected;
+
+        // modify the local version to confirm it is interactable
         isSelected &= IsInteractable();
 
         foreach (Rigidbody piece in barricadePieces)
         {
-            piece.GetComponent<MeshRenderer>().material = isSelected ? selectedMaterial : unselectedMaterial;
+            Debug.Assert(
+                    piece.GetComponent<Renderer>() != null,
+                    "Could not find renderer for Barricade piece"
+                );
+            
+            piece.GetComponent<Renderer>().material = 
+                    isSelected 
+                    ? selectedMaterial 
+                    : unselectedMaterial;
         }
     }
 
     public IEnumerator StartInteraction()
     {
-        Debug.Log("Repairing");
+        Debug.Log("Starting Barricade Repair...");
+
         beingRepaired = true;
+
         while (piecesLeft < barricadePieces.Length)
         {
             yield return new WaitForSeconds(pieceRepairTime);
             DamageBarricade(-healthPerPiece); // negative damage repairs
-            Debug.Log("Repair");
+            Debug.Log("Repaired a Piece of a Barricade.");
         }
         beingRepaired = false;
     }
 
-    public bool IsBeingInteractedWith() => beingRepaired;
+    public bool IsBeingInteractedWith()
+    {
+        return beingRepaired;
+    }
 
     public void ForceEndInteraction(Coroutine interaction)
     {

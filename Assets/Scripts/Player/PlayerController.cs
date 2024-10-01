@@ -4,20 +4,23 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     //TODO: add camera panning in direction of aiming for scoped in stuff.
-    /// <summary> The camera attached to the tank. Not used yet </summary>
-    [SerializeField] private Camera activeCamera;
+    /// <summary> The camera attached to the tank. Not used yet. </summary>
+    [SerializeField] protected Camera activeCamera;
 
     /// <summary> The interaction manager. </summary>
-    [SerializeField] private InteractableManager interactionManager;
+    [SerializeField] protected InteractableManager interactionManager;
 
     /// <summary> The physical tank attached to the input. </summary>
-    private PlayerBody body;
+    protected PlayerBody body;
 
     /// <summary> Enables Debug output. </summary>
-    [SerializeField] private bool debug = false;
+    [SerializeField] protected bool debug = false;
 
-    // GetComponentInChildren<PlayerBody>();
-    private void Start() => body = transform.Find("PlayerBody").GetComponent<PlayerBody>(); 
+    protected void Start()
+    {
+        // GetComponentInChildren<PlayerBody>();
+        body = transform.Find("PlayerBody").GetComponent<PlayerBody>();
+    }
 
     /// <summary> Rotates the player towards the provided aim. </summary>
     /// <param name="inputValue"> The Input as a Vector2. </param>
@@ -46,11 +49,16 @@ public class PlayerController : MonoBehaviour
         body.Fire(PlayerBody.BulletTypes.Expanding);
     }
 
+    /// <summary> The interaction input, triggers an interaction. </summary>
+    /// <param name="inputValue"> The interaction input, discarded. </param>
     public void OnInteract(InputValue inputValue)
     {
         interactionManager.Interact();
     }
 
+    /// <summary> Updates the aim of the player according to the position 
+    /// of the mouse on the screen. </summary>
+    /// <param name="aimPos"> The position of the mouse on the screen. </param>
     private void UpdateAim(Vector2 aimPos)
     {
         Ray ray = Camera.main.ScreenPointToRay(aimPos);

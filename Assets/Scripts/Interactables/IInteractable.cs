@@ -10,8 +10,8 @@ public interface IInteractable
 
     /// <summary> Checks if the interactable is currently 
     /// available to be interacted with. </summary>
-    /// <returns>True if able to be interacted with,
-    /// false otherwise</returns>
+    /// <returns> True if the interactable is able to 
+    /// be interacted with. </returns>
     public bool IsInteractable();
 
     /// <summary> Toggles if the object should behave like
@@ -30,6 +30,9 @@ public interface IInteractable
     /// when this occurs. </summary>
     public void ForceEndInteraction(Coroutine interactor);
 
+    /// <summary> Checks if the interactable is currently 
+    /// being interacted with. </summary>
+    /// <returns> True if the interactable is being interacted with. </returns>
     public bool IsBeingInteractedWith();
 
     /// <summary> Outputs the text to display if able to 

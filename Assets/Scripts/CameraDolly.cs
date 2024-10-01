@@ -1,17 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraDolly : MonoBehaviour
 {
+    /// <summary> A reference to the transform the camera follows. </summary>
+    [SerializeField] protected Transform toFollow;
 
-    [SerializeField] private Transform toFollow;
+    /// <summary> The offset between the camera's position and the target, 
+    /// set at start. </summary>
+    protected Vector3 offset;
 
-    private Vector3 offset;
+    protected void Start()
+    {
+        Debug.Assert(
+                toFollow != null,
+                "Transform not assigned for CameraDolly."
+            );
 
-    void Start() => offset = transform.position - toFollow.position;
+        offset = transform.position - toFollow.position;
+    }
 
-    void Update()
+    protected void Update()
     {
         transform.position = toFollow.position + offset;
     }
