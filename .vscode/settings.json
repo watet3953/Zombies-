@@ -56,5 +56,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "BTGD9856_Game.sln"
+    "dotnet.defaultSolution": "BTGD9856_Game.sln",
+    "dotnet.preferCSharpExtension": true
 }
