@@ -64,6 +64,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6944268461071181491}
+  - component: {fileID: 5541051548203144023}
   m_Layer: 0
   m_Name: Zombie
   m_TagString: Untagged
@@ -88,6 +89,18 @@ Transform:
   - {fileID: 5742830317176859562}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5541051548203144023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5156766247763528581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0952ac3802f498643a37e6aa8218f68a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4273428399788449982
 PrefabInstance:
   m_ObjectHideFlags: 0
