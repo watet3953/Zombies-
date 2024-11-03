@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4722016126943638104}
   - component: {fileID: 6068475748337992647}
   - component: {fileID: 432001215397069508}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: InteractionRange
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -79,7 +79,7 @@ GameObject:
   - component: {fileID: 2100486784788060491}
   - component: {fileID: 4365731449595479729}
   - component: {fileID: 4829895278006165120}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: PlayerBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -160,7 +160,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 944557280618269646}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -383,7 +383,7 @@ GameObject:
   - component: {fileID: 6866329614284214224}
   - component: {fileID: 7795532394299947178}
   - component: {fileID: 8240140665437013138}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GunArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -464,7 +464,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8408670828555972968}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -581,7 +581,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2926333269781384896}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FireLocation
   m_TagString: FireLocation
   m_Icon: {fileID: 0}
@@ -746,7 +746,7 @@ GameObject:
   - component: {fileID: 4825115282041059152}
   - component: {fileID: 5153480886852583456}
   - component: {fileID: 80482995928379039}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -830,7 +830,7 @@ GameObject:
   - component: {fileID: 7712138912935988283}
   - component: {fileID: 2285668675971814626}
   - component: {fileID: 5942048315779419796}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: PlayerBody
   m_TagString: Player
   m_Icon: {fileID: 0}
