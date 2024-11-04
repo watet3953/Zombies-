@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class AIProperties {
@@ -22,12 +23,11 @@ public class HuntAIProperties : AIProperties {
 
 [System.Serializable]
 public class InvestigateAIProperties : AIProperties {
-
 }
 
 [System.Serializable]
 public class StunAIProperties : AIProperties {
-
+    public static float stunTime = 2.0f;
 }
 
 public class ZombieAI : AdvancedFSM
@@ -39,11 +39,28 @@ public class ZombieAI : AdvancedFSM
     [SerializeField] private InvestigateAIProperties investigateAIProperties;
     [SerializeField] private StunAIProperties stunAIProperties;
 
+
+    public readonly float VisionAngle = Mathf.Cos(90f * Mathf.Deg2Rad);
+    public readonly float maxVisionDistance = 50.0f;
+
+    public HearingListener listener;
+
+    public bool healthDropped = false;
+    public bool dead = false;
     private float health;
     public float Health {
         get {
             return health;
         }
+        set {
+            healthDropped = (health > value); // health gone down.
+            health = value;
+            dead = (health <= 0.0f); // if health less than 0 then die.
+        }
+    }
+
+    private void Start() {
+        listener = GetComponent<HearingListener>();
     }
 
     private void ConstructFSM() {

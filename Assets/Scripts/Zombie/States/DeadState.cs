@@ -13,6 +13,11 @@ public class DeadState : FSMState
 
     }
 
+    public override void EnterStateInit(Transform player, Transform npc)
+    {
+        // hide the zombie, move it back to object pool.
+    }
+
     public override void Act(Transform player, Transform npc)
     {
         // dead, notify object pooling to remove & reset zombie.
