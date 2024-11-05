@@ -26,7 +26,7 @@ public class IdleState : FSMState
     public override void Reason(Transform player, Transform npc)
     {
         // killed
-        if (controller.dead) {
+        if (controller.IsDead) {
             controller.PerformTransition(Transition.Killed);
             return;
         }

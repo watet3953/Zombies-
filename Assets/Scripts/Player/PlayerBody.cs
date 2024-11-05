@@ -31,7 +31,7 @@ public class PlayerBody : MonoBehaviour
     [SerializeField] protected Transform barrelLocation;
 
     /// <summary> The transform at which the bullet is spawned. </summary>
-    [SerializeField] protected Transform fireLocation;
+    [SerializeField] protected HearingEmitter fireLocation;
 
     protected void Awake()
     {
@@ -79,17 +79,18 @@ public class PlayerBody : MonoBehaviour
     /// <param name="bulletType"> The type of bullet to fire.</param>
     public void Fire(BulletTypes bulletType)
     {
-        Vector3 direction = fireLocation.position - barrelLocation.position;
+        Vector3 direction = fireLocation.transform.position - barrelLocation.position;
         direction.y = (bulletType == BulletTypes.Expanding) ? 1.2f : 0f;
         direction.Normalize();
 
         Bullet bullet = Instantiate(
                 bullets[(int)bulletType],
-                fireLocation.position,
+                fireLocation.transform.position,
                 Quaternion.identity
             ).GetComponent<Bullet>();
 
         bullet.gameObject.SetActive(true);
+        fireLocation.Play(); // FIXME: clean this up?
         bullet.Fire(direction);
     }
 }

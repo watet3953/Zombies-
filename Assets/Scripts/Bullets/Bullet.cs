@@ -38,11 +38,17 @@ public class Bullet : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         switch (other.tag) {
+            case "Enemy":
+            {
+                other.GetComponent<ZombieAI>().Health -= damage;
+                Destroy(gameObject);
+                break;
+            }
             case "Barricade": // Damage barricade if intact, then act like wall
             {
                 if (other.GetComponent<Barricade>().IsBroken)
                 {
-                    return;
+                    break;
                 }
                 other.GetComponent<Barricade>().DamageBarricade(damage);
                 goto case "Wall";

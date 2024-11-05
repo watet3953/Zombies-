@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HearingManager : MonoBehaviour
 {
-    public static HearingManager instance = null;
+    public volatile static HearingManager instance = null;
 
     public float soundDissapationRatio = 1.0f;
 
@@ -16,12 +16,13 @@ public class HearingManager : MonoBehaviour
             Destroy(instance);
             return;
         }
+        Debug.Log("Initializing Hearing Manager");
         instance = this;
     }
 
-    public void EmitSound(Transform position, float volume) {
+    public void EmitSound(Vector3 position, float volume) {
         foreach (HearingListener listener in listeners) { // this could be made more efficient with like a quad tree or something if scaled up a shit ton.
-            float distance = (listener.transform.position - position.position).magnitude;
+            float distance = (listener.transform.position - position).magnitude;
             if (distance * soundDissapationRatio < volume) {
                 listener.RecieveSound(position, volume - distance);
             }

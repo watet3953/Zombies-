@@ -6,10 +6,10 @@ public class HearingEmitter : MonoBehaviour
 {
 
     public AudioSource audioSource;
-    float volume;
+    public float volume;
 
     public void Play() {
         audioSource.Play();
-        HearingManager.instance.EmitSound(transform, volume);
+        HearingManager.instance.EmitSound(transform.position, volume);
     }
 }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 
 /// <summary>
 /// This class is adapted and modified from the FSM implementation class available on UnifyCommunity website
@@ -21,7 +22,8 @@ public enum Transition
     PlayerSpotted,
     PlayerLost, // specifically got out of sight.
     NoiseReached,
-    NoiseHeard
+    NoiseHeard,
+    NoiseLost // lost interest
 }
 
 public enum FSMStateID
@@ -141,6 +143,7 @@ public class AdvancedFSM : FSM
             if (state.ID == currentStateID)
             {
                 currentState = state;
+                Debug.Log("Transition:" + trans + "to " + currentState.GetType());
                 currentState.EnterStateInit(playerTransform, transform);
                 break;
             }

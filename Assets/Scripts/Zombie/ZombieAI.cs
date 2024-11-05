@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public abstract class AIProperties {
     public float speed = 3.0f;
@@ -41,13 +42,22 @@ public class ZombieAI : AdvancedFSM
 
 
     public readonly float VisionAngle = Mathf.Cos(90f * Mathf.Deg2Rad);
-    public readonly float maxVisionDistance = 50.0f;
+    public float maxVisionDistance = 50.0f;
+
+    public float attackDistance = 1.0f;
+
+    public PlayerBody player;
 
     public HearingListener listener;
+    
+    public NavMeshAgent nma;
 
-    public bool healthDropped = false;
-    public bool dead = false;
-    private float health;
+    /// <summary> Has the health-dropped been resolved yet? (stun) </summary>
+    [HideInInspector] public bool healthDropped = false;
+
+    /// <summary> Is the zombie dead? </summary>
+    public bool IsDead {private set; get;} = false;
+    private float health = 50f;
     public float Health {
         get {
             return health;
@@ -55,12 +65,19 @@ public class ZombieAI : AdvancedFSM
         set {
             healthDropped = (health > value); // health gone down.
             health = value;
-            dead = (health <= 0.0f); // if health less than 0 then die.
+            IsDead = (health <= 0.0f); // if health less than 0 then die.
         }
     }
 
-    private void Start() {
+    protected override void Initialize() {
         listener = GetComponent<HearingListener>();
+        ConstructFSM();
+    }
+
+    protected override void FSMUpdate()
+    {
+        CurrentState.Act(player.transform, transform);
+        CurrentState.Reason(player.transform, transform);
     }
 
     private void ConstructFSM() {
@@ -78,6 +95,8 @@ public class ZombieAI : AdvancedFSM
         InvestigateState investigateState = new InvestigateState(this);
 
         investigateState.AddTransition(Transition.NoiseReached, FSMStateID.Idle);
+        investigateState.AddTransition(Transition.NoiseLost,    FSMStateID.Idle);
+        investigateState.AddTransition(Transition.NoiseHeard,   FSMStateID.Investigating); // looping transition, to reset state (go look at new sound.)
         investigateState.AddTransition(Transition.PlayerSpotted,FSMStateID.Hunting);
         investigateState.AddTransition(Transition.Hit,          FSMStateID.Stunned);
         investigateState.AddTransition(Transition.Killed,       FSMStateID.Dead);

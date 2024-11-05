@@ -26,7 +26,7 @@ public class HuntState : FSMState
     public override void Reason(Transform player, Transform npc)
     {
         // killed
-        if (controller.dead) {
+        if (controller.IsDead) {
             controller.PerformTransition(Transition.Killed);
             return;
         }
@@ -45,6 +45,9 @@ public class HuntState : FSMState
         }
 
         // Player Reached
-        
+        if (Utils.IsPlayerVisible(player,npc, controller.attackDistance, Mathf.PI * 2)) { // is the player visible within attack distance (360 degree cone of vision)
+            controller.PerformTransition(Transition.PlayerReached);
+            return;
+        }
     }
 }
