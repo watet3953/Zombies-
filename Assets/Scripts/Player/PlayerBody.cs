@@ -11,13 +11,13 @@ public class PlayerBody : MonoBehaviour
 
 
     /// <summary> The types of bullet the tank can fire. </summary>
-    public enum BulletTypes 
-    { 
+    public enum BulletTypes
+    {
         /// <summary> Impacts, damages, and despawns. </summary>
-        Default, 
+        Default,
 
         /// <summary> Impacts, expands while damaging, then fades. </summary>
-        Expanding  
+        Expanding
     }
 
     /// <summary> An array of bullet prefabs, with array index corresponding 
@@ -33,6 +33,11 @@ public class PlayerBody : MonoBehaviour
     /// <summary> The transform at which the bullet is spawned. </summary>
     [SerializeField] protected HearingEmitter fireLocation;
 
+    [SerializeField] protected HearingEmitter footstepsLocation;
+    private float strideLength = 1.4f;
+    private float strideDelta;
+    private float lastStepTime; // the time in seconds since program start for the last step.
+
     protected void Awake()
     {
         Debug.Assert(
@@ -40,6 +45,8 @@ public class PlayerBody : MonoBehaviour
                 "Could not find rigidbody for Player."
             );
         rb = GetComponent<Rigidbody>();
+        strideDelta = strideLength;
+        lastStepTime = Time.time;
     }
 
     protected void FixedUpdate()
@@ -60,8 +67,19 @@ public class PlayerBody : MonoBehaviour
                 movementSpeed.y,
                 Vector3.Angle(moveDirection, transform.forward) / 180f
             );
-
         moveDirection *= Time.fixedDeltaTime;
+
+        strideDelta -= moveDirection.magnitude; // handle footsteps
+        while (strideDelta < 0)
+        {
+            strideDelta += strideLength;
+
+            footstepsLocation.volume = Mathf.Clamp(1 / ((Time.time - lastStepTime) * 5) * 10, 2, 10); //TODO: move these magic numbers to parameters
+            lastStepTime = Time.time;
+
+            //Debug.Log("Footstep at " + lastStepTime + " with volume: " + footstepsLocation.volume);
+            footstepsLocation.Play();
+        }
 
         rb.MovePosition(transform.position + moveDirection);
     }

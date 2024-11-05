@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class AttackState : FSMState
 {
@@ -16,7 +13,9 @@ public class AttackState : FSMState
 
     public override void EnterStateInit(Transform player, Transform npc)
     {
-        
+        controller.animator.SetTrigger("isAttacking");
+        if (controller.debugText != null) controller.debugText.text = "Attacking";
+        controller.nma.destination = controller.transform.position;
     }
 
     public override void Act(Transform player, Transform npc)
@@ -27,20 +26,23 @@ public class AttackState : FSMState
     public override void Reason(Transform player, Transform npc)
     {
         // killed
-        if (controller.IsDead) {
+        if (controller.IsDead)
+        {
             controller.PerformTransition(Transition.Killed);
             return;
         }
 
         // hurt
-        if (controller.healthDropped) {
+        if (controller.healthDropped)
+        {
             controller.healthDropped = false;
             controller.PerformTransition(Transition.Hit);
             return;
         }
-        
+
         // player escaped
-        if (!Utils.IsPlayerVisible(player,npc, controller.attackDistance, Mathf.PI * 2)) { // is the player visible within attack distance (360 degree cone of vision)
+        if (!Utils.IsPlayerVisible(player, npc, controller.attackDistance, Mathf.PI * 2))
+        { // is the player visible within attack distance (360 degree cone of vision)
             controller.PerformTransition(Transition.PlayerEscaped);
             return;
         }

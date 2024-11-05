@@ -9,6 +9,10 @@ public class ExpandingBullet : Bullet
     /// <summary> The Rigidbody for the bullet. </summary>
     protected Rigidbody rb;
 
+    [SerializeField] protected HearingEmitter emitter;
+
+    private bool blownUp = false;
+
     protected void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -27,32 +31,40 @@ public class ExpandingBullet : Bullet
 
     private void OnTriggerEnter(Collider other)
     {
-        switch (other.tag) {
-            case "Barricade": // Damage barricade if intact, then act like wall
-            {
-                if (other.GetComponent<Barricade>().IsBroken)
+        switch (other.tag)
+        {
+            case "Enemy":
                 {
-                    return;
+                    other.GetComponent<ZombieAI>().Health -= damage;
+                    goto case "Wall";
                 }
+            case "Barricade": // Damage barricade if intact, then act like wall
+                {
+                    if (other.GetComponent<Barricade>().IsBroken)
+                    {
+                        return;
+                    }
 
-                other.GetComponent<Barricade>().DamageBarricade(damage);
+                    other.GetComponent<Barricade>().DamageBarricade(damage);
 
-                goto case "Wall";
-            }
+                    goto case "Wall";
+                }
             case "Wall": // Fall to ground and begin expanding.
-            {
-                direction = Vector3.zero;
-                rb.useGravity = true;
-                rb.isKinematic = true;
+                {
+                    if (blownUp) break;
+                    blownUp = true;
+                    direction = Vector3.zero;
+                    rb.useGravity = true;
+                    rb.isKinematic = true;
+                    emitter.Play();
+                    StartCoroutine(Expand());
 
-                StartCoroutine(Expand());
-
-                break;
-            }
+                    break;
+                }
             default: // Assume bullet isn't meant to collide
-            {
-                break;
-            }
+                {
+                    break;
+                }
         }
     }
 
@@ -67,12 +79,8 @@ public class ExpandingBullet : Bullet
 
         while (currentScale < expandSize)
         {
-            currentScale = Mathf.MoveTowards(
-                    currentScale,
-                    expandSize,
-                    Time.deltaTime * 4
-                );
-                
+            currentScale = Mathf.Min(currentScale + Time.deltaTime * 500, expandSize);
+
             transform.localScale = currentScale * originalScale;
 
             yield return null;

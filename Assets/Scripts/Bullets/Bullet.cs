@@ -10,7 +10,7 @@ public class Bullet : MonoBehaviour
 
     /// <summary> The damage the bullet will do upon impact. </summary>
     [SerializeField] protected float damage = 5f;
-    
+
     /// <summary> The direction of travel as a normalized vector. </summary>
     protected Vector3 direction = Vector3.zero;
 
@@ -29,7 +29,7 @@ public class Bullet : MonoBehaviour
     public void Fire(Vector3 dir)
     {
         Debug.Assert(
-                dir.magnitude.CompareTo(1f) <= 0.1f,
+                Mathf.Abs(dir.magnitude - 1.0f) <= 0.1f,
                 "Bullet fire direction is not normalized."
             );
         direction = dir;
@@ -37,31 +37,32 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        switch (other.tag) {
+        switch (other.tag)
+        {
             case "Enemy":
-            {
-                other.GetComponent<ZombieAI>().Health -= damage;
-                Destroy(gameObject);
-                break;
-            }
+                {
+                    other.GetComponent<ZombieAI>().Health -= damage;
+                    Destroy(gameObject);
+                    break;
+                }
             case "Barricade": // Damage barricade if intact, then act like wall
-            {
-                if (other.GetComponent<Barricade>().IsBroken)
+                {
+                    if (other.GetComponent<Barricade>().IsBroken)
+                    {
+                        break;
+                    }
+                    other.GetComponent<Barricade>().DamageBarricade(damage);
+                    goto case "Wall";
+                }
+            case "Wall": // Destroy the bullet
+                {
+                    Destroy(gameObject);
+                    break;
+                }
+            default: // Assume bullet isn't meant to collide
                 {
                     break;
                 }
-                other.GetComponent<Barricade>().DamageBarricade(damage);
-                goto case "Wall";
-            }
-            case "Wall": // Destroy the bullet
-            {
-                Destroy(gameObject);
-                break;
-            }
-            default: // Assume bullet isn't meant to collide
-            {
-                break;
-            }
         }
     }
 }
