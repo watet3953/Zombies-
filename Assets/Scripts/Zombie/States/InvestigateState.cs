@@ -5,12 +5,13 @@ using UnityEngine.AI;
 public class InvestigateState : FSMState
 {
     private ZombieAI controller;
+    private AIProperties properties;
 
-    public InvestigateState(ZombieAI controller)
+    public InvestigateState(ZombieAI controller, AIProperties properties)
     {
         this.controller = controller;
         stateID = FSMStateID.Investigating;
-
+        this.properties = properties;
     }
 
 
@@ -29,14 +30,14 @@ public class InvestigateState : FSMState
 
         if (!NavMesh.SamplePosition((Vector3)soundPos, out NavMeshHit navHit, 10f, NavMesh.AllAreas)) return; // will get discarded as "point reached"
 
-        controller.nma.speed = AIProperties.speed;
+        controller.nma.speed = properties.speed;
         controller.nma.destination = navHit.position;
 
     }
 
     public override void Act(Transform player, Transform npc)
     {
-        
+        // navmesh movement handled by agent
     }
 
     public override void Reason(Transform player, Transform npc)
@@ -57,7 +58,7 @@ public class InvestigateState : FSMState
         }
 
         // Player Spotted
-        if (Utils.IsPlayerVisible(player, npc, controller.maxVisionDistance, controller.VisionAngle))
+        if (Utils.IsPlayerVisible(player, npc, properties.maxVisionDistance, properties.VisionAngle))
         {
             controller.PerformTransition(Transition.PlayerSpotted);
             return;

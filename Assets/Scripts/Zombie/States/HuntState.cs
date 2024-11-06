@@ -3,11 +3,13 @@ using UnityEngine;
 public class HuntState : FSMState
 {
     private ZombieAI controller;
+    private AIProperties properties;
 
-    public HuntState(ZombieAI controller)
+    public HuntState(ZombieAI controller, AIProperties properties)
     {
         this.controller = controller;
         stateID = FSMStateID.Hunting;
+        this.properties = properties;
 
     }
 
@@ -24,7 +26,7 @@ public class HuntState : FSMState
 
     public override void Act(Transform player, Transform npc)
     {
-        if (Utils.IsPlayerVisible(player, npc, controller.maxVisionDistance, controller.VisionAngle))
+        if (Utils.IsPlayerVisible(player, npc, properties.maxVisionDistance, properties.VisionAngle))
         {
             controller.nma.destination = player.position;
         }
@@ -48,14 +50,14 @@ public class HuntState : FSMState
         }
 
         // Player Lost
-        if (!Utils.IsPlayerVisible(player, npc, controller.maxVisionDistance, controller.VisionAngle))
+        if (!Utils.IsPlayerVisible(player, npc, properties.maxVisionDistance, properties.VisionAngle))
         {
             controller.PerformTransition(Transition.PlayerLost);
             return;
         }
 
         // Player Reached
-        if (Utils.IsPlayerVisible(player, npc, controller.attackDistance - 0.2f, Mathf.PI * 2))
+        if (Utils.IsPlayerVisible(player, npc, properties.attackDistance - 0.2f, Mathf.PI * 2))
         { // is the player visible within attack distance (360 degree cone of vision)
             controller.PerformTransition(Transition.PlayerReached);
             return;

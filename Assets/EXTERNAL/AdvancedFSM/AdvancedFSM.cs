@@ -23,7 +23,6 @@ public enum Transition
     PlayerLost, // specifically got out of sight.
     NoiseReached,
     NoiseHeard,
-    NoiseLost // lost interest
 }
 
 public enum FSMStateID

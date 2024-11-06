@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.AI.Navigation;
 using UnityEngine;
 
 public class Barricade : MonoBehaviour, IInteractable
@@ -12,6 +13,8 @@ public class Barricade : MonoBehaviour, IInteractable
     /// <summary> The pieces of the barricade, falling off in order from 
     /// first added to last added </summary>
     [SerializeField] protected Rigidbody[] barricadePieces;
+
+    [SerializeField] protected NavMeshLink[] links;
 
     /// <summary> The stored start locations of the barricade pieces, 
     /// used for repairing. </summary>
@@ -57,6 +60,8 @@ public class Barricade : MonoBehaviour, IInteractable
 
         startPosition = new Vector3[piecesLeft];
         startRotation = new Quaternion[piecesLeft];
+
+        foreach (NavMeshLink link in links) link.enabled = false;
 
         // initial setup of all the pieces
         for (int i = 0; i < barricadePieces.Length; i++)
@@ -125,6 +130,7 @@ public class Barricade : MonoBehaviour, IInteractable
             );
 
         GetComponent<Collider>().isTrigger = isBroken;
+        foreach (NavMeshLink link in links) link.enabled = isBroken; // enable/disable linking
     }
 
     /// <summary> Repairs a piece of the barricade, reenables barricade if the

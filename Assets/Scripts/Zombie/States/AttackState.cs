@@ -4,10 +4,13 @@ public class AttackState : FSMState
 {
     private ZombieAI controller;
 
-    public AttackState(ZombieAI controller)
+    private AIProperties properties;
+
+    public AttackState(ZombieAI controller, AIProperties properties)
     {
         this.controller = controller;
         stateID = FSMStateID.Attacking;
+        this.properties = properties;
 
     }
 
@@ -17,7 +20,7 @@ public class AttackState : FSMState
         controller.animator.SetTrigger("isAttacking");
         controller.animator.ResetTrigger("isDamaged");
         controller.animator.ResetTrigger("isIdle");
-        
+
         if (controller.debugText != null) controller.debugText.text = "Attacking";
         controller.nma.destination = controller.transform.position;
     }
@@ -46,7 +49,7 @@ public class AttackState : FSMState
         }
 
         // player escaped
-        if (!Utils.IsPlayerVisible(player, npc, controller.attackDistance, 360.0f))
+        if (!Utils.IsPlayerVisible(player, npc, properties.attackDistance, 360.0f))
         { // is the player visible within attack distance (360 degree cone of vision)
             controller.PerformTransition(Transition.PlayerEscaped);
             return;

@@ -1,63 +1,29 @@
 using UnityEngine;
 using UnityEngine.AI;
 
+[System.Serializable]
 public abstract class AIProperties
 {
-    public static float speed = 3.0f;
-}
-
-[System.Serializable]
-public class AttackAIProperties : AIProperties
-{
-
-}
-
-[System.Serializable]
-public class DeadAIProperties : AIProperties
-{
-
-}
-
-[System.Serializable]
-public class HuntAIProperties : AIProperties
-{
-
-}
-
-[System.Serializable]
-public class InvestigateAIProperties : AIProperties
-{
+    public float speed = 3.0f;
+    public readonly float VisionAngle = 60f;
+    public float maxVisionDistance = 50.0f;
+    public float attackDistance = 2.0f;
 }
 
 [System.Serializable]
 public class StunAIProperties : AIProperties
 {
-    public static float stunTime = 0.3f;
+    public float stunTime = 0.3f;
 }
 
 public class ZombieAI : AdvancedFSM
 {
 
-    [SerializeField] public AttackAIProperties attackAIProperties;
-    [SerializeField] public DeadAIProperties deadAIProperties;
-    [SerializeField] public HuntAIProperties HuntAIProperties;
-    [SerializeField] public InvestigateAIProperties investigateAIProperties;
-    [SerializeField] public StunAIProperties stunAIProperties;
-
-
-    public readonly float VisionAngle = 60f;
-    public float maxVisionDistance = 50.0f;
-
-    public float attackDistance = 2.0f;
-
+    [SerializeField] private StunAIProperties stunAIProperties;
     public PlayerBody player;
-
     public Animator animator;
-
     public HearingListener listener;
-
     public NavMeshAgent nma;
-
     public TextMesh debugText;
 
     /// <summary> Has the health-dropped been resolved yet? (stun) </summary>
@@ -74,9 +40,9 @@ public class ZombieAI : AdvancedFSM
         }
         set
         {
-            healthDropped = (health > value); // health gone down.
+            healthDropped = health > value; // health gone down.
             health = value;
-            IsDead = (health <= 0.0f); // if health less than 0 then die.
+            IsDead = health <= 0.0f; // if health less than 0 then die.
         }
     }
 
@@ -98,7 +64,7 @@ public class ZombieAI : AdvancedFSM
         /* Create States */
 
         // Idle State
-        IdleState idleState = new IdleState(this);
+        IdleState idleState = new IdleState(this, stunAIProperties);
 
         idleState.AddTransition(Transition.NoiseHeard, FSMStateID.Investigating);
         idleState.AddTransition(Transition.PlayerSpotted, FSMStateID.Hunting);
@@ -106,17 +72,16 @@ public class ZombieAI : AdvancedFSM
         idleState.AddTransition(Transition.Killed, FSMStateID.Dead);
 
         // Investigate State
-        InvestigateState investigateState = new InvestigateState(this);
+        InvestigateState investigateState = new InvestigateState(this, stunAIProperties);
 
         investigateState.AddTransition(Transition.NoiseReached, FSMStateID.Idle);
-        investigateState.AddTransition(Transition.NoiseLost, FSMStateID.Idle);
         investigateState.AddTransition(Transition.NoiseHeard, FSMStateID.Investigating); // looping transition, to reset state (go look at new sound.)
         investigateState.AddTransition(Transition.PlayerSpotted, FSMStateID.Hunting);
         investigateState.AddTransition(Transition.Hit, FSMStateID.Stunned);
         investigateState.AddTransition(Transition.Killed, FSMStateID.Dead);
 
         // Hunting State
-        HuntState huntState = new HuntState(this);
+        HuntState huntState = new HuntState(this, stunAIProperties);
 
         huntState.AddTransition(Transition.PlayerLost, FSMStateID.Investigating);
         huntState.AddTransition(Transition.PlayerReached, FSMStateID.Attacking);
@@ -124,14 +89,14 @@ public class ZombieAI : AdvancedFSM
         huntState.AddTransition(Transition.Killed, FSMStateID.Dead);
 
         // Attacking State
-        AttackState attackState = new AttackState(this);
+        AttackState attackState = new AttackState(this, stunAIProperties);
 
         attackState.AddTransition(Transition.PlayerEscaped, FSMStateID.Hunting);
         attackState.AddTransition(Transition.Hit, FSMStateID.Stunned);
         attackState.AddTransition(Transition.Killed, FSMStateID.Dead);
 
         // Stun State
-        StunState stunState = new StunState(this);
+        StunState stunState = new StunState(this, stunAIProperties);
 
         stunState.AddTransition(Transition.StunEnded, FSMStateID.Idle);
         stunState.AddTransition(Transition.Hit, FSMStateID.Stunned); // looping transition, to reset state (stun-locking).

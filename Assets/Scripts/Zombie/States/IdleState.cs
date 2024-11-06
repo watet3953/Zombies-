@@ -3,11 +3,13 @@ using UnityEngine;
 public class IdleState : FSMState
 {
     private ZombieAI controller;
+    private AIProperties properties;
 
-    public IdleState(ZombieAI controller)
+    public IdleState(ZombieAI controller, AIProperties properties)
     {
         this.controller = controller;
         stateID = FSMStateID.Idle;
+        this.properties = properties;
 
     }
 
@@ -23,7 +25,7 @@ public class IdleState : FSMState
 
     public override void Act(Transform player, Transform npc)
     {
-        // blank, maybe an animation? i dunno
+        // no action needed, idle state.
     }
 
     public override void Reason(Transform player, Transform npc)
@@ -44,7 +46,7 @@ public class IdleState : FSMState
         }
 
         // player spotted
-        if (Utils.IsPlayerVisible(player, npc, controller.maxVisionDistance, controller.VisionAngle))
+        if (Utils.IsPlayerVisible(player, npc, properties.maxVisionDistance, properties.VisionAngle))
         {
             controller.PerformTransition(Transition.PlayerSpotted);
             return;

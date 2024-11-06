@@ -4,14 +4,17 @@ public class StunState : FSMState
 {
     private ZombieAI controller;
 
+    private StunAIProperties properties;
+
     private float stunTimeLeft = 0.0f;
 
 
 
-    public StunState(ZombieAI controller)
+    public StunState(ZombieAI controller, StunAIProperties properties)
     {
         this.controller = controller;
         stateID = FSMStateID.Stunned;
+        this.properties = properties;
 
     }
 
@@ -21,15 +24,15 @@ public class StunState : FSMState
         controller.animator.ResetTrigger("isAttacking");
         controller.animator.SetTrigger("isDamaged");
         controller.animator.ResetTrigger("isIdle");
-        
+
         if (controller.debugText != null) controller.debugText.text = "Stunned";
         controller.nma.destination = controller.transform.position;
-        stunTimeLeft = StunAIProperties.stunTime;
+        stunTimeLeft = properties.stunTime;
     }
 
     public override void Act(Transform player, Transform npc)
     {
-        // tick down timer until state over? play animation.
+        // tick down timer until state over
         stunTimeLeft -= Time.deltaTime;
     }
 

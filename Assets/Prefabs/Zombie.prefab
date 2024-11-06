@@ -1041,8 +1041,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0952ac3802f498643a37e6aa8218f68a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxVisionDistance: 100
-  attackDistance: 1.2
+  stunAIProperties:
+    speed: 3
+    maxVisionDistance: 100
+    attackDistance: 1.2
+    stunTime: 0.3
   player: {fileID: 0}
   animator: {fileID: 2809601561427266170}
   listener: {fileID: 2492265960602392707}
