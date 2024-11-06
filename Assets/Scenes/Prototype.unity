@@ -7824,16 +7824,6 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1362366752}
-    - target: {fileID: 5541051548203144023, guid: 39fb92bb51159dcb8878f3805f255efa,
-        type: 3}
-      propertyPath: stunAIProperties.attackDistance
-      value: 1.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5541051548203144023, guid: 39fb92bb51159dcb8878f3805f255efa,
-        type: 3}
-      propertyPath: stunAIProperties.maxVisionDistance
-      value: 100
-      objectReference: {fileID: 0}
     - target: {fileID: 6944268461071181491, guid: 39fb92bb51159dcb8878f3805f255efa,
         type: 3}
       propertyPath: m_LocalPosition.x

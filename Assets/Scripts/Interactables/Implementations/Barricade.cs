@@ -130,7 +130,7 @@ public class Barricade : MonoBehaviour, IInteractable
             );
 
         GetComponent<Collider>().isTrigger = isBroken;
-        foreach (NavMeshLink link in links) link.enabled = isBroken; // enable/disable linking
+        foreach (NavMeshLink link in links) link.enabled = isBroken; // FIXME: navmesh doesn't enable/disable at runtime :(
     }
 
     /// <summary> Repairs a piece of the barricade, reenables barricade if the
