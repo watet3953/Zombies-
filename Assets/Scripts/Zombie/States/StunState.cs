@@ -17,7 +17,11 @@ public class StunState : FSMState
 
     public override void EnterStateInit(Transform player, Transform npc)
     {
+        controller.animator.ResetTrigger("isMoving");
+        controller.animator.ResetTrigger("isAttacking");
         controller.animator.SetTrigger("isDamaged");
+        controller.animator.ResetTrigger("isIdle");
+        
         if (controller.debugText != null) controller.debugText.text = "Stunned";
         controller.nma.destination = controller.transform.position;
         stunTimeLeft = StunAIProperties.stunTime;

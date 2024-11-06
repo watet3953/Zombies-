@@ -13,6 +13,9 @@ public class IdleState : FSMState
 
     public override void EnterStateInit(Transform player, Transform npc)
     {
+        controller.animator.ResetTrigger("isMoving");
+        controller.animator.ResetTrigger("isAttacking");
+        controller.animator.ResetTrigger("isDamaged");
         controller.animator.SetTrigger("isIdle");
         if (controller.debugText != null) controller.debugText.text = "Idle";
         controller.nma.destination = controller.transform.position;

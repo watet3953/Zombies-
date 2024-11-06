@@ -14,6 +14,9 @@ public class HuntState : FSMState
     public override void EnterStateInit(Transform player, Transform npc)
     {
         controller.animator.SetTrigger("isMoving");
+        controller.animator.ResetTrigger("isAttacking");
+        controller.animator.ResetTrigger("isDamaged");
+        controller.animator.ResetTrigger("isIdle");
 
         if (controller.debugText != null) controller.debugText.text = "Hunting";
         controller.nma.destination = player.position;
@@ -52,7 +55,7 @@ public class HuntState : FSMState
         }
 
         // Player Reached
-        if (Utils.IsPlayerVisible(player, npc, controller.attackDistance, Mathf.PI * 2))
+        if (Utils.IsPlayerVisible(player, npc, controller.attackDistance - 0.2f, Mathf.PI * 2))
         { // is the player visible within attack distance (360 degree cone of vision)
             controller.PerformTransition(Transition.PlayerReached);
             return;

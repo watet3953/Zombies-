@@ -2048,12 +2048,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 324639585}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!95 &424382211 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 2809601561427266170, guid: 39fb92bb51159dcb8878f3805f255efa,
-    type: 3}
-  m_PrefabInstance: {fileID: 1756558115}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &430766364
 GameObject:
   m_ObjectHideFlags: 0
@@ -7820,11 +7814,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2809601561427266170, guid: 39fb92bb51159dcb8878f3805f255efa,
-        type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: a03fa040459ebb047bcbc3447d3860a0, type: 2}
     - target: {fileID: 5156766247763528581, guid: 39fb92bb51159dcb8878f3805f255efa,
         type: 3}
       propertyPath: m_Name
@@ -7835,16 +7824,6 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1362366752}
-    - target: {fileID: 5541051548203144023, guid: 39fb92bb51159dcb8878f3805f255efa,
-        type: 3}
-      propertyPath: animator
-      value: 
-      objectReference: {fileID: 424382211}
-    - target: {fileID: 5541051548203144023, guid: 39fb92bb51159dcb8878f3805f255efa,
-        type: 3}
-      propertyPath: attackDistance
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 6944268461071181491, guid: 39fb92bb51159dcb8878f3805f255efa,
         type: 3}
       propertyPath: m_LocalPosition.x

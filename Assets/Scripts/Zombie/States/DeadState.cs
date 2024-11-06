@@ -13,9 +13,16 @@ public class DeadState : FSMState
 
     public override void EnterStateInit(Transform player, Transform npc)
     {
+        controller.animator.ResetTrigger("isMoving");
+        controller.animator.ResetTrigger("isAttacking");
         controller.animator.SetTrigger("isDamaged");
+        controller.animator.ResetTrigger("isIdle");
+        
         if (controller.debugText != null) controller.debugText.text = "Dead";
-        controller.nma.destination = controller.transform.position; // hacky way of disabling
+        controller.nma.enabled = false; // hacky way of disabling
+        controller.GetComponent<Collider>().enabled = false;
+        controller.listener.enabled = false;
+        controller.enabled = false;
         // hide the zombie, move it back to object pool.
     }
 

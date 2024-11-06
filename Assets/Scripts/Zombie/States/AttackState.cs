@@ -13,13 +13,18 @@ public class AttackState : FSMState
 
     public override void EnterStateInit(Transform player, Transform npc)
     {
+        controller.animator.ResetTrigger("isMoving");
         controller.animator.SetTrigger("isAttacking");
+        controller.animator.ResetTrigger("isDamaged");
+        controller.animator.ResetTrigger("isIdle");
+        
         if (controller.debugText != null) controller.debugText.text = "Attacking";
         controller.nma.destination = controller.transform.position;
     }
 
     public override void Act(Transform player, Transform npc)
     {
+        controller.transform.LookAt(player.transform);
         // hit player every some amount of time until they're dead.
     }
 
@@ -41,7 +46,7 @@ public class AttackState : FSMState
         }
 
         // player escaped
-        if (!Utils.IsPlayerVisible(player, npc, controller.attackDistance, Mathf.PI * 2))
+        if (!Utils.IsPlayerVisible(player, npc, controller.attackDistance, 360.0f))
         { // is the player visible within attack distance (360 degree cone of vision)
             controller.PerformTransition(Transition.PlayerEscaped);
             return;

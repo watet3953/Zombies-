@@ -6,8 +6,6 @@ public class InvestigateState : FSMState
 {
     private ZombieAI controller;
 
-    Queue<Vector3> pathToPoints = new();
-
     public InvestigateState(ZombieAI controller)
     {
         this.controller = controller;
@@ -19,6 +17,10 @@ public class InvestigateState : FSMState
     public override void EnterStateInit(Transform player, Transform npc)
     {
         controller.animator.SetTrigger("isMoving");
+        controller.animator.ResetTrigger("isAttacking");
+        controller.animator.ResetTrigger("isDamaged");
+        controller.animator.ResetTrigger("isIdle");
+
         if (controller.debugText != null) controller.debugText.text = "Investigating";
         controller.listener.HasNewSound(); // flush out the sound from a normal transition FIXME: ew
         Vector3? soundPos = controller.listener.GetTopSoundPosition();
@@ -34,10 +36,7 @@ public class InvestigateState : FSMState
 
     public override void Act(Transform player, Transform npc)
     {
-        if (controller.nma.remainingDistance < 0.1f && pathToPoints.TryPeek(out Vector3 _))
-        {
-            controller.nma.destination = pathToPoints.Dequeue(); // this is calculating navmesh twice, but whatever
-        }
+        
     }
 
     public override void Reason(Transform player, Transform npc)

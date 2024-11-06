@@ -12,7 +12,7 @@ public static class Utils
         //Debug.Log("LookVector: " + lookVector);
         if (lookVector.magnitude > maxVisionDistance)
         {
-            //Debug.Log("Out of Range");
+            //Debug.Log("Out of Range: " + lookVector.magnitude + " vs " + maxVisionDistance);
             return false;
         }
 
