@@ -271,7 +271,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 3447
+    m_Bits: 3575
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -340,6 +340,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeCamera: {fileID: 1446744539189800812}
   interactionManager: {fileID: 6068475748337992647}
+  body: {fileID: 2285668675971814626}
   debug: 1
 --- !u!114 &5995363351659916950
 MonoBehaviour:
@@ -1012,6 +1013,7 @@ MonoBehaviour:
   - {fileID: 1245588272522384, guid: 0ffffed8ae6623a4b93ad5c777981d4e, type: 3}
   barrelLocation: {fileID: 4825115282041059152}
   fireLocation: {fileID: 7803010432118696034}
+  footstepsLocation: {fileID: 0}
 --- !u!136 &5942048315779419796
 CapsuleCollider:
   m_ObjectHideFlags: 0

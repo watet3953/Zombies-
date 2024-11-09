@@ -11,15 +11,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] protected InteractableManager interactionManager;
 
     /// <summary> The physical tank attached to the input. </summary>
-    protected PlayerBody body;
+    [SerializeField] protected PlayerBody body;
+    [HideInInspector] public PlayerBody Body => body;
 
     /// <summary> Enables Debug output. </summary>
     [SerializeField] protected bool debug = false;
 
     protected void Start()
     {
-        // GetComponentInChildren<PlayerBody>();
-        body = transform.Find("PlayerBody").GetComponent<PlayerBody>();
+        Debug.Assert(body != null);
     }
 
     /// <summary> Rotates the player towards the provided aim. </summary>
