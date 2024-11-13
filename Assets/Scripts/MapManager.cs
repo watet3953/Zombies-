@@ -41,7 +41,7 @@ public class MapManager : MonoBehaviour
 
     private void SpawnZombie(Transform location)
     {
-        Instantiate(zombiePrefab.gameObject, location);
-        zombiePrefab.player = GameManager.Instance.Player.Body;
+        ZombieAI zombie = Instantiate(zombiePrefab.gameObject, location).GetComponent<ZombieAI>();
+        zombie.player = GameManager.Instance.Player.Body;
     }
 }

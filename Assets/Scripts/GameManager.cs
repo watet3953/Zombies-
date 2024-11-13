@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
         {
             if (!instance)
                 instance = FindObjectOfType<GameManager>(); // final try before failing
-            if (!Instance)
+            if (!instance)
                 throw new System.Exception("No GameManager Instance Found.");
             return instance;
         }
