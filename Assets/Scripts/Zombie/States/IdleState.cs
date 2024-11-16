@@ -19,6 +19,9 @@ public class IdleState : FSMState
         controller.animator.ResetTrigger("isAttacking");
         controller.animator.ResetTrigger("isDamaged");
         controller.animator.SetTrigger("isIdle");
+
+        controller.nma.enabled = true;
+        controller.listener.enabled = true;
         if (controller.debugText != null) controller.debugText.text = "Idle";
         controller.nma.destination = controller.transform.position;
     }

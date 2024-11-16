@@ -59,6 +59,18 @@ public class ZombieAI : AdvancedFSM
         CurrentState.Reason(playerTransform, transform);
     }
 
+    public void ResetFSM()
+    {
+        Health = 50f;
+        foreach (FSMState state in fsmStates) {
+            if (state.ID == FSMStateID.Idle)
+            {
+                ResetFSM(state);
+                return;
+            }
+        }
+    }
+
     private void ConstructFSM()
     {
         /* Create States */

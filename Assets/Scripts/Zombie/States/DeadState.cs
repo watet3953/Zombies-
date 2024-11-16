@@ -11,6 +11,8 @@ public class DeadState : FSMState
 
     }
 
+    float timeToDespawn;
+
     public override void EnterStateInit(Transform player, Transform npc)
     {
         controller.animator.ResetTrigger("isMoving");
@@ -22,13 +24,16 @@ public class DeadState : FSMState
         controller.nma.enabled = false; // hacky way of disabling
         controller.GetComponent<Collider>().enabled = false;
         controller.listener.enabled = false;
-        controller.enabled = false;
-        // hide the zombie, move it back to object pool.
+        timeToDespawn = 5.0f;
     }
 
     public override void Act(Transform player, Transform npc)
     {
-        // dead, notify object pooling to remove & reset zombie.
+        timeToDespawn -= Time.deltaTime;
+        while (timeToDespawn > 0.0) return;
+        // hide the zombie, move it back to object pool.
+        controller.enabled = false;
+        MapManager.Instance.pool.ReturnToPool(controller);
     }
 
     public override void Reason(Transform player, Transform npc)

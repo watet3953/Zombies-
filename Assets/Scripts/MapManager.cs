@@ -23,10 +23,10 @@ public class MapManager : MonoBehaviour
     }
     #endregion Singleton
 
-    [SerializeField] private ZombieAI zombiePrefab;
+    [SerializeField] public ZombiePool pool;
 
     float spawnDelta = 0f;
-    readonly float spawnTime = 10f;
+    [SerializeField] float spawnTime = 10f;
 
     private void Update()
     {
@@ -34,14 +34,14 @@ public class MapManager : MonoBehaviour
         while (spawnDelta < 0)
         {
             spawnDelta += spawnTime;
-            SpawnZombie(transform); // TEMP
+            SpawnZombie(transform.position);
         }
     }
 
 
-    private void SpawnZombie(Transform location)
+    private void SpawnZombie(Vector3 location)
     {
-        ZombieAI zombie = Instantiate(zombiePrefab.gameObject, location).GetComponent<ZombieAI>();
-        zombie.player = GameManager.Instance.Player.Body;
+        location += new Vector3(Random.Range(-3.0f, 3.0f), 0, Random.Range(-3.0f, 3.0f));
+        ZombieAI zombie = pool.Get(location);
     }
 }

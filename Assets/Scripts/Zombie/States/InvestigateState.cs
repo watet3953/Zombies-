@@ -22,6 +22,9 @@ public class InvestigateState : FSMState
         controller.animator.ResetTrigger("isDamaged");
         controller.animator.ResetTrigger("isIdle");
 
+
+        controller.nma.enabled = true;
+        controller.listener.enabled = true;
         if (controller.debugText != null) controller.debugText.text = "Investigating";
         controller.listener.HasNewSound(); // flush out the sound from a normal transition FIXME: ew
         Vector3? soundPos = controller.listener.GetTopSoundPosition();

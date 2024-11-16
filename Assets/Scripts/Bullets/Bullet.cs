@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
@@ -11,8 +12,11 @@ public class Bullet : MonoBehaviour
     /// <summary> The damage the bullet will do upon impact. </summary>
     [SerializeField] protected float damage = 5f;
 
+    [SerializeField] protected ParticleSystem impactParticles;
+
     /// <summary> The direction of travel as a normalized vector. </summary>
     protected Vector3 direction = Vector3.zero;
+
 
     protected void Start()
     {
@@ -42,7 +46,7 @@ public class Bullet : MonoBehaviour
             case "Enemy":
                 {
                     other.GetComponent<ZombieAI>().Health -= damage;
-                    Destroy(gameObject);
+                    StartCoroutine(Hit());
                     break;
                 }
             case "Barricade": // Damage barricade if intact, then act like wall
@@ -56,7 +60,7 @@ public class Bullet : MonoBehaviour
                 }
             case "Wall": // Destroy the bullet
                 {
-                    Destroy(gameObject);
+                    StartCoroutine(Hit());
                     break;
                 }
             default: // Assume bullet isn't meant to collide
@@ -64,5 +68,15 @@ public class Bullet : MonoBehaviour
                     break;
                 }
         }
+    }
+
+    private IEnumerator Hit()
+    {
+        speed = 0;
+        GetComponent<Collider>().enabled = false;
+        GetComponent<Rigidbody>().useGravity = false;
+        impactParticles.Play();
+        yield return new WaitForSeconds(0.5f);
+        Destroy(gameObject);
     }
 }

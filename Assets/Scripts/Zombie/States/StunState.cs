@@ -26,7 +26,8 @@ public class StunState : FSMState
         controller.animator.ResetTrigger("isIdle");
 
         if (controller.debugText != null) controller.debugText.text = "Stunned";
-        controller.nma.destination = controller.transform.position;
+        controller.nma.enabled = false;
+        controller.listener.enabled = true;
         stunTimeLeft = properties.stunTime;
     }
 

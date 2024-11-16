@@ -21,6 +21,8 @@ public class AttackState : FSMState
         controller.animator.ResetTrigger("isDamaged");
         controller.animator.ResetTrigger("isIdle");
 
+        controller.nma.enabled = true;
+        controller.listener.enabled = true;
         if (controller.debugText != null) controller.debugText.text = "Attacking";
         controller.nma.destination = controller.transform.position;
     }

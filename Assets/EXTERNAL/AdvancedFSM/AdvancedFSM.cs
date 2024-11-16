@@ -38,7 +38,7 @@ public enum FSMStateID
 
 public class AdvancedFSM : FSM
 {
-    private List<FSMState> fsmStates;
+    protected List<FSMState> fsmStates;
 
     //The fsmStates are not changing directly but updated by using transitions
     private FSMStateID currentStateID;
@@ -50,6 +50,15 @@ public class AdvancedFSM : FSM
     public AdvancedFSM()
     {
         fsmStates = new List<FSMState>();
+    }
+    
+    // makeshift way of resetting FSM state.
+    public void ResetFSM(FSMState state)
+    {
+        currentState = state;
+        currentStateID = state.ID;
+        Debug.Log("Reset FSM to: " + currentState.GetType());
+        currentState.EnterStateInit(playerTransform, transform);
     }
 
     /// <summary>

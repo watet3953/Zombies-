@@ -113,6 +113,11 @@ public class InteractableManager : MonoBehaviour
         IInteractable closest = null;
         foreach (IInteractable i in inRange)
         {
+            if (i == null || i.GetSelf() == null)
+            {
+                if (Closest == i) Closest = null;
+                continue; // FIXME: find some way to remove items from inRange mid-iteration, otherwise this is a memory leak
+            }
             float distance = (
                     i.GetSelf().transform.position
                     - gameObject.transform.position

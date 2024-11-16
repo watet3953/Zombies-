@@ -20,6 +20,8 @@ public class HuntState : FSMState
         controller.animator.ResetTrigger("isDamaged");
         controller.animator.ResetTrigger("isIdle");
 
+        controller.nma.enabled = true;
+        controller.listener.enabled = true;
         if (controller.debugText != null) controller.debugText.text = "Hunting";
         controller.nma.destination = player.position;
     }

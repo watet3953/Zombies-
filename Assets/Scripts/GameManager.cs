@@ -41,33 +41,37 @@ public class GameManager : MonoBehaviour
     {
         Debug.Assert(player != null, "Player is not present in Persistent Scene.");
 
-        StartCoroutine(LoadMap(levelNames[0]));
+        StartCoroutine(LoadMap(startingMapName));
     }
 
     #region SceneManagement
 
     bool curLoading = false;
-    string curLevelName;
+    string curMapName;
 
-    public string[] levelNames;
+    public string startingMapName;
 
-    IEnumerator LoadMap(string levelName)
+    public IEnumerator LoadMap(string mapName)
     {
-        Debug.Assert(!curLoading, "Cannot load new map while already loading another.");
+        if (curLoading)
+        {
+            Debug.LogError("Cannot load new map while already loading another.");
+            yield break;
+        }
         curLoading = true;
         player.gameObject.SetActive(false);
 
         // unload all non-persistent scenes.
-        if (!string.IsNullOrEmpty(curLevelName))
-            yield return SceneManager.UnloadSceneAsync(curLevelName);
+        if (!string.IsNullOrEmpty(curMapName))
+            yield return SceneManager.UnloadSceneAsync(curMapName);
 
         // load desired level.
-        yield return SceneManager.LoadSceneAsync(levelName, LoadSceneMode.Additive);
-        curLevelName = levelName;
+        yield return SceneManager.LoadSceneAsync(mapName, LoadSceneMode.Additive);
+        curMapName = mapName;
 
         // Reset non-persistent data.
-        SceneManager.SetActiveScene(SceneManager.GetSceneByName(levelName));
-        player.Body.transform.position = Vector3.up * 5;
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName(mapName));
+        player.Body.transform.position = Vector3.up * 5; //FIXME: replace with actual spawn position.
         player.gameObject.SetActive(true);
         curLoading = false;
         yield break;
