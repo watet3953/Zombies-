@@ -24,6 +24,8 @@ public class PlayerBody : MonoBehaviour
     /// to BulletTypes enum value. </summary>
     [SerializeField] protected GameObject[] bullets;
 
+    [SerializeField] protected AudioClip[] bulletFireSounds;
+
     /// <summary> The tank rigidbody, used for movement and aiming </summary>
     protected Rigidbody rb;
 
@@ -34,6 +36,11 @@ public class PlayerBody : MonoBehaviour
     [SerializeField] protected HearingEmitter fireLocation;
 
     [SerializeField] protected HearingEmitter footstepsLocation;
+
+    [SerializeField] protected AudioClip[] footsteps;
+    private Vector2 footstepPitchRange = new(0.8f,1.2f);
+    private Vector2 bulletPitchRange = new(0.95f, 1.05f);
+
     private float strideLength = 1.4f;
     private float strideDelta;
     private float lastStepTime; // the time in seconds since program start for the last step.
@@ -78,6 +85,8 @@ public class PlayerBody : MonoBehaviour
             lastStepTime = Time.time;
 
             //Debug.Log("Footstep at " + lastStepTime + " with volume: " + footstepsLocation.volume);
+            footstepsLocation.audioSource.clip = footsteps[Random.Range(0, footsteps.Length - 1)];
+            footstepsLocation.audioSource.pitch = Random.Range(footstepPitchRange.x, footstepPitchRange.y);
             footstepsLocation.Play();
         }
 
@@ -108,7 +117,9 @@ public class PlayerBody : MonoBehaviour
             ).GetComponent<Bullet>();
 
         bullet.gameObject.SetActive(true);
-        fireLocation.Play(); // FIXME: clean this up?
+        fireLocation.audioSource.clip = bulletFireSounds[(int)bulletType];
+        fireLocation.audioSource.pitch = Random.Range(bulletPitchRange.x, bulletPitchRange.y);
+        fireLocation.PlayOneShot(); // FIXME: clean this up?
         bullet.Fire(direction);
     }
 }

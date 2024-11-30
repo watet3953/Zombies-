@@ -13,6 +13,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] protected float damage = 5f;
 
     [SerializeField] protected ParticleSystem impactParticles;
+    [SerializeField] protected AudioSource impactSound;
 
     /// <summary> The direction of travel as a normalized vector. </summary>
     protected Vector3 direction = Vector3.zero;
@@ -76,7 +77,9 @@ public class Bullet : MonoBehaviour
         GetComponent<Collider>().enabled = false;
         GetComponent<Rigidbody>().useGravity = false;
         impactParticles.Play();
+        impactSound.Play();
         yield return new WaitForSeconds(0.5f);
+        yield return new WaitUntil(() => impactSound.time >= impactSound.clip.length); // wait for sound to finish playing (my wonderful lambdas)
         Destroy(gameObject);
     }
 }

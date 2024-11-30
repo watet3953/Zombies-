@@ -62,6 +62,7 @@ public class ZombieAI : AdvancedFSM
     public void ResetFSM()
     {
         Health = 50f;
+        GetComponent<Collider>().enabled = true;
         foreach (FSMState state in fsmStates) {
             if (state.ID == FSMStateID.Idle)
             {

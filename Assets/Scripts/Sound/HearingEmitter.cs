@@ -12,4 +12,10 @@ public class HearingEmitter : MonoBehaviour
         audioSource.Play();
         HearingManager.instance.EmitSound(transform.position, volume);
     }
+
+    public void PlayOneShot()
+    {
+        audioSource.PlayOneShot(audioSource.clip);
+        HearingManager.instance.EmitSound(transform.position, volume);
+    }
 }

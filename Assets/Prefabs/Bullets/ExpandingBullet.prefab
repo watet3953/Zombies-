@@ -151,6 +151,8 @@ MonoBehaviour:
   speed: 6
   lifetime: 5
   damage: 25
+  impactParticles: {fileID: 0}
+  impactSound: {fileID: 0}
   expandSize: 50
   emitter: {fileID: 108502773900061585}
 --- !u!114 &108502773900061585
@@ -177,10 +179,10 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 8ee48a5ab0c0c9a4da49a0e0efda4548, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
-  m_Pitch: 1
+  m_Pitch: 0.5
   Loop: 0
   Mute: 0
   Spatialize: 0
