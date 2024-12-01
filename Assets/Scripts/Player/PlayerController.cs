@@ -26,7 +26,8 @@ public class PlayerController : MonoBehaviour
     /// <param name="inputValue"> The Input as a Vector2. </param>
     public void OnLook(InputValue inputValue)
     {
-        UpdateAim(inputValue.Get<Vector2>());
+        if (body.enabled)
+            UpdateAim(inputValue.Get<Vector2>());
     }
 
     /// <summary> Moves the player in the specified direction. </summary>
@@ -39,21 +40,24 @@ public class PlayerController : MonoBehaviour
     /// <param name="inputValue"> The shot input, discarded. </param>
     public void OnFire(InputValue inputValue)
     {
-        body.Fire(PlayerBody.BulletTypes.Default);
+        if (body.enabled) 
+            body.Fire(PlayerBody.BulletTypes.Default);
     }
 
     /// <summary> The alternate fire input, fires a expanding bullet. </summary>
     /// <param name="inputValue"> The shot input, discarded. </param>
     public void OnAltFire(InputValue inputValue)
     {
-        body.Fire(PlayerBody.BulletTypes.Expanding);
+        if (body.enabled)
+            body.Fire(PlayerBody.BulletTypes.Expanding);
     }
 
     /// <summary> The interaction input, triggers an interaction. </summary>
     /// <param name="inputValue"> The interaction input, discarded. </param>
     public void OnInteract(InputValue inputValue)
     {
-        interactionManager.Interact();
+        if (body.enabled)
+            interactionManager.Interact();
     }
 
     /// <summary> Updates the aim of the player according to the position 

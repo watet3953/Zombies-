@@ -41,8 +41,22 @@ public class GameManager : MonoBehaviour
     {
         Debug.Assert(player != null, "Player is not present in Persistent Scene.");
 
+        player.enabled = false;
+        player.Body.enabled = false;
+        StartCoroutine(LoadMap(mainMenuName));
+    }
+
+    #region Menu Management
+
+    [SerializeField] string mainMenuName = "MainMenu";
+    public void StartNewGame()
+    {
+        player.enabled = true;
+        player.Body.enabled = true;
         StartCoroutine(LoadMap(startingMapName));
     }
+
+    #endregion Menu Mangement
 
     #region SceneManagement
 
