@@ -25,6 +25,8 @@ public class MapManager : MonoBehaviour
 
     [SerializeField] public ZombiePool pool;
 
+    [SerializeField] public AudioClip music;
+
     float spawnDelta = 0f;
     [SerializeField] float spawnTime = 10f;
 

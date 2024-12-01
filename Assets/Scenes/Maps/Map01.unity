@@ -1557,7 +1557,7 @@ GameObject:
   - component: {fileID: 207420209}
   - component: {fileID: 207420208}
   m_Layer: 0
-  m_Name: AudioManager
+  m_Name: HearingManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4834,6 +4834,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pool: {fileID: 801571840}
+  music: {fileID: 8300000, guid: 799ca0af0661bd4479d97a09eb129633, type: 3}
   spawnTime: 1
 --- !u!1 &1255074937
 GameObject:

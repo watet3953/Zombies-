@@ -62,6 +62,7 @@ public class GameManager : MonoBehaviour
         player.gameObject.SetActive(false);
 
         // unload all non-persistent scenes.
+        yield return AudioManager.Instance.StartCoroutine(AudioManager.Instance.FadeOut());
         if (!string.IsNullOrEmpty(curMapName))
             yield return SceneManager.UnloadSceneAsync(curMapName);
 
@@ -73,6 +74,9 @@ public class GameManager : MonoBehaviour
         SceneManager.SetActiveScene(SceneManager.GetSceneByName(mapName));
         player.Body.transform.position = Vector3.up * 5; //FIXME: replace with actual spawn position.
         player.gameObject.SetActive(true);
+
+        AudioManager.Instance.LoadLevelComplete();
+
         curLoading = false;
         yield break;
     }
