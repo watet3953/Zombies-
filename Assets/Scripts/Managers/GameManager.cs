@@ -41,14 +41,21 @@ public class GameManager : MonoBehaviour
     {
         Debug.Assert(player != null, "Player is not present in Persistent Scene.");
 
-        player.enabled = false;
-        player.Body.enabled = false;
-        StartCoroutine(LoadMap(mainMenuName));
+        LoadMainMenu();
     }
 
     #region Menu Management
 
     [SerializeField] string mainMenuName = "MainMenu";
+    [SerializeField] LoadScreen loadScreen;
+
+    public void LoadMainMenu()
+    {
+        player.enabled = false;
+        player.Body.enabled = false;
+        StartCoroutine(LoadMap(mainMenuName));
+    }
+
     public void StartNewGame()
     {
         player.enabled = true;
@@ -72,6 +79,8 @@ public class GameManager : MonoBehaviour
             Debug.LogError("Cannot load new map while already loading another.");
             yield break;
         }
+        loadScreen.gameObject.SetActive(true);
+        yield return loadScreen.StartCoroutine(loadScreen.FakeLoad(1f));
         curLoading = true;
         player.gameObject.SetActive(false);
 
@@ -89,6 +98,7 @@ public class GameManager : MonoBehaviour
         player.Body.transform.position = Vector3.up * 5; //FIXME: replace with actual spawn position.
         player.gameObject.SetActive(true);
 
+        loadScreen.gameObject.SetActive(false);
         AudioManager.Instance.LoadLevelComplete();
 
         curLoading = false;

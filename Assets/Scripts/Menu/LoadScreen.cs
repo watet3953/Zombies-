@@ -7,15 +7,25 @@ public class LoadScreen : MonoBehaviour
 {
     [SerializeField] Slider loadBar;
 
-    // Start is called before the first frame update
-    void Start()
+    void UpdateSlider(float value)
     {
-        
+        value = Mathf.Clamp01(value);
+
+        loadBar.value = value;
     }
 
-    // Update is called once per frame
-    void Update()
+    public IEnumerator FakeLoad(float duration = 1f)
     {
-        
+        float timer = 0f;
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            UpdateSlider(timer/duration);
+            yield return null;
+        }
+
+        // clamp to 1 manually
+        UpdateSlider(1f);
     }
 }
