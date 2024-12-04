@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadMainMenu()
     {
+        saveData = SaveHandler.Load();
         player.enabled = false;
         player.Body.enabled = false;
         StartCoroutine(LoadMap(mainMenuName, false));
@@ -60,9 +61,20 @@ public class GameManager : MonoBehaviour
 
     public void StartNewGame()
     {
+        saveData = new(mainMenuName);
         player.enabled = true;
         player.Body.enabled = true;
         StartCoroutine(LoadMap(startingMapName, true));
+    }
+
+    public void LoadGame()
+    {
+        if (SaveHandler.SavePresent)
+        {
+            player.enabled = true;
+            player.Body.enabled = true;
+            StartCoroutine(LoadMap(saveData.curMap, true));
+        }
     }
 
     #endregion Menu Mangement
@@ -70,9 +82,9 @@ public class GameManager : MonoBehaviour
     #region SceneManagement
 
     bool curLoading = false;
-    string curMapName;
 
     public string startingMapName;
+    public SaveData saveData;
 
     public IEnumerator LoadMap(string mapName, bool gameplayMap)
     {
@@ -90,12 +102,12 @@ public class GameManager : MonoBehaviour
 
         // unload all non-persistent scenes.
         yield return AudioManager.Instance.StartCoroutine(AudioManager.Instance.FadeOut());
-        if (!string.IsNullOrEmpty(curMapName))
-            yield return SceneManager.UnloadSceneAsync(curMapName);
+        if (!string.IsNullOrEmpty(saveData.curMap) && SceneManager.GetSceneByName(saveData.curMap).isLoaded)
+            yield return SceneManager.UnloadSceneAsync(saveData.curMap);
 
         // load desired level.
         yield return SceneManager.LoadSceneAsync(mapName, LoadSceneMode.Additive);
-        curMapName = mapName;
+        saveData.curMap = mapName;
 
         // Reset non-persistent data.
         SceneManager.SetActiveScene(SceneManager.GetSceneByName(mapName));

@@ -4,6 +4,12 @@ using UnityEngine.UI;
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] GameObject optionsMenu;
+    [SerializeField] Button continueButton;
+
+    public void Start()
+    {
+        continueButton.interactable = SaveHandler.SavePresent;
+    }
 
     public void NewGame()
     {
@@ -14,7 +20,7 @@ public class MainMenu : MonoBehaviour
 
     public void Continue()
     {
-        // ask game manager to load save data
+        GameManager.Instance.LoadGame();
     }
 
     public void Options()
