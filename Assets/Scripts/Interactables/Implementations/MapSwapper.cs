@@ -56,7 +56,7 @@ public class MapSwapper : MonoBehaviour, IInteractable
 
     public IEnumerator StartInteraction()
     {
-        GameManager.Instance.StartCoroutine(GameManager.Instance.LoadMap(targetMap));
+        GameManager.Instance.StartCoroutine(GameManager.Instance.LoadMap(targetMap, true));
         yield break; // fake coroutine to appease the interface
     }
 }

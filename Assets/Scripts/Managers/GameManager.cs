@@ -48,19 +48,21 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] string mainMenuName = "MainMenu";
     [SerializeField] LoadScreen loadScreen;
+    [SerializeField] PauseScreen pauseScreen;
+    [SerializeField] HUD hud;
 
     public void LoadMainMenu()
     {
         player.enabled = false;
         player.Body.enabled = false;
-        StartCoroutine(LoadMap(mainMenuName));
+        StartCoroutine(LoadMap(mainMenuName, false));
     }
 
     public void StartNewGame()
     {
         player.enabled = true;
         player.Body.enabled = true;
-        StartCoroutine(LoadMap(startingMapName));
+        StartCoroutine(LoadMap(startingMapName, true));
     }
 
     #endregion Menu Mangement
@@ -72,13 +74,15 @@ public class GameManager : MonoBehaviour
 
     public string startingMapName;
 
-    public IEnumerator LoadMap(string mapName)
+    public IEnumerator LoadMap(string mapName, bool gameplayMap)
     {
         if (curLoading)
         {
             Debug.LogError("Cannot load new map while already loading another.");
             yield break;
         }
+        pauseScreen.canPause = false;
+        hud.enabled = false;
         loadScreen.gameObject.SetActive(true);
         yield return loadScreen.StartCoroutine(loadScreen.FakeLoad(1f));
         curLoading = true;
@@ -101,12 +105,12 @@ public class GameManager : MonoBehaviour
         loadScreen.gameObject.SetActive(false);
         AudioManager.Instance.LoadLevelComplete();
 
+        pauseScreen.canPause = gameplayMap;
+        hud.enabled = gameplayMap;
+
         curLoading = false;
         yield break;
     }
 
     #endregion SceneManagement
-
-
-
 }
