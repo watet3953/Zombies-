@@ -37,6 +37,34 @@ public class AudioManager : MonoBehaviour
     private float SFXVolume;
     [SerializeField] private AudioMixer mixer;
 
+    public void SetMasterVolume(float volume)
+    {
+        if (volume < 0f || volume > 1f) throw new System.ArgumentOutOfRangeException("Volume slider must be set between 0.0 and 1.0");
+
+        volume = volume <= 0.0001f ? -80f : 20 * Mathf.Log10(volume); // roughly maps to people's expectations i think?
+
+        masterVolume = volume;
+        mixer.SetFloat("MasterVolume", volume);
+    }
+    public void SetMusicVolume(float volume)
+    {
+        if (volume < 0f || volume > 1f) throw new System.ArgumentOutOfRangeException("Volume slider must be set between 0.0 and 1.0");
+
+        volume = volume <= 0.0001f ? -80f : 20 * Mathf.Log10(volume); // roughly maps to people's expectations i think?
+
+        musicVolume = volume;
+        mixer.SetFloat("musicVolume", volume);
+    }
+    public void SetSFXVolume(float volume)
+    {
+        if (volume < 0f || volume > 1f) throw new System.ArgumentOutOfRangeException("Volume slider must be set between 0.0 and 1.0");
+
+        volume = volume <= 0.0001f ? -80f : 20 * Mathf.Log10(volume); // roughly maps to people's expectations i think?
+
+        SFXVolume = volume;
+        mixer.SetFloat("SFXVolume", volume);
+    }
+
     private void Start()
     {
         mixer.GetFloat("MasterVolume", out masterVolume);

@@ -1,9 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
+    [SerializeField] GameObject optionsMenu;
+
     public void NewGame()
     {
         // ask game manager to load level 1
@@ -18,7 +19,11 @@ public class MainMenu : MonoBehaviour
 
     public void Options()
     {
-        // implement on your own
+        optionsMenu.SetActive(true);
+    }
+    public void ExitOptions()
+    {
+        optionsMenu.SetActive(false);
     }
 
     public void Exit()
@@ -30,4 +35,14 @@ public class MainMenu : MonoBehaviour
          UnityEditor.EditorApplication.isPlaying = false;
 #endif
     }
+
+    #region Options Menu
+    [SerializeField] Slider MasterVolumeSlider;
+    [SerializeField] Slider SFXVolumeSlider;
+    [SerializeField] Slider MusicVolumeSlider;
+    public void OnMasterVolumeChanged() => AudioManager.Instance.SetMasterVolume(MasterVolumeSlider.value);
+    public void OnSFXVolumeChanged() => AudioManager.Instance.SetSFXVolume(SFXVolumeSlider.value);
+    public void OnMusicVolumeChanged() => AudioManager.Instance.SetMusicVolume(MusicVolumeSlider.value);
+
+    #endregion Options Menu
 }
